@@ -30,7 +30,7 @@ const Board = ({ variant }) => {
       socket = io()
   
       socket.on('connect', () => {
-        console.log('connected')
+        console.log('connected from board')
       })
     }
 
@@ -151,6 +151,7 @@ const Board = ({ variant }) => {
         if (socket == null) return
 
         socket.on('receive-move', (state) => {
+            console.log('Received move')
             const piece = convertObjToPiece(state.piece)
             movePiece(piece, state.endSquare)
             setCanSelectPiece(true)
@@ -222,9 +223,9 @@ const Board = ({ variant }) => {
             {blackWins && <div>Black wins</div>}
             <div className="inner-container">
                 {board.map((row, i) => {
-                return <div key={uuidv4()} className="row w-full flex">
+                return <div key={uuidv4()} className="row">
                     {row.map((item, j) => {
-                        return <div key={uuidv4()} className="square w-12 h-12 md:w-16 md:h-16" onClick={() => clickSquare(item)}
+                        return <div key={uuidv4()} className="square" onClick={() => clickSquare(item)}
                                 style={{
                                     backgroundColor: (j + i) % 2 === 0 ? themeColor1 : themeColor2,
                                     border: item.isLegalSquare && "2px solid green"
@@ -247,9 +248,9 @@ const Board = ({ variant }) => {
             {blackWins && <div>Black wins</div>}
             <div className="inner-container">
                 {board.slice(0).reverse().map((row, i) => {
-                return <div key={uuidv4()} className="row w-full flex">
+                return <div key={uuidv4()} className="row">
                     {row.slice(0).reverse().map((item, j) => {
-                        return <div key={uuidv4()} className="square w-12 h-12 md:w-16 md:h-16" onClick={() => clickSquare(item)}
+                        return <div key={uuidv4()} className="square" onClick={() => clickSquare(item)}
                                 style={{
                                     backgroundColor: (j + i) % 2 === 0 ? themeColor1 : themeColor2,
                                     border: item.isLegalSquare && "2px solid green"

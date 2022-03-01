@@ -15,16 +15,28 @@ a {
   box-sizing: border-box;
 }
 
+.row {
+  width: 100%;
+  display: flex;
+}
+
 .inner-container {
   grid-column-start: 2;
   grid-row-start: 2;
 }
 
 .square {
+  width: 3rem;
+  height: 3rem;
   background-color: rgb(218, 213, 213);
   text-align: center;
   font-size: 4em;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.piece-img {
+  height: 60px;
+  width: 60px;
 }
