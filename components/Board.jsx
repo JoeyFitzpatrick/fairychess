@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { convertNumToPiece, convertObjToPiece } from "./pieces";
 import { variants } from "./variants";
 import { v4 as uuidv4 } from "uuid";
-import io from "Socket.IO-client";
+import io from "socket.io-client";
 let socket;
 
 // IMPORTANT: just need to start socket connection at the beginning and it should work
