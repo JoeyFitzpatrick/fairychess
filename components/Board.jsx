@@ -6,10 +6,14 @@ import { v4 as uuidv4 } from "uuid";
 import io from "Socket.IO-client";
 let socket;
 
+// IMPORTANT: just need to start socket connection at the beginning and it should work
+// Socket starts after clicking something in each client
+
 const Board = ({ variant }) => {
   let themeColor1 = "rgba(240,217,181,255)";
   let themeColor2 = "rgba(181,136,99,255)";
 
+  const [mysocket, setMySocket] = useState();
   const [board, setBoard] = useState([]);
   const [canSelectPiece, setCanSelectPiece] = useState(true);
   const [selectedPiece, setSelectedPiece] = useState(null);
@@ -26,9 +30,30 @@ const Board = ({ variant }) => {
     socketInitializer();
   }, []);
 
+  useEffect(() => {
+    console.log(socket);
+    if (!socket) return;
+    socket.on("receive-move", (state) => {
+      const piece = convertObjToPiece(state.piece);
+      movePiece(piece, state.endSquare);
+      setCanSelectPiece(true);
+      setSelectedPiece(null);
+      setCanSelectTarget(false);
+      setIsMyTurn(true);
+      setTurnColor(state.turnColor);
+
+      for (const row of board) {
+        for (const square of row) {
+          square.isLegalSquare = false;
+        }
+      }
+    });
+  }, [socket]);
+
   const socketInitializer = async () => {
     await fetch("/api/socket");
     socket = io();
+    setMySocket(socket)
 
     socket.on("connect", () => {
       console.log("connected from board");
@@ -90,25 +115,6 @@ const Board = ({ variant }) => {
     setBoard(boardCopy);
     checkGameOver();
   };
-
-  useEffect(() => {
-    if (!socket) return;
-    socket.on("receive-move", (state) => {
-      const piece = convertObjToPiece(state.piece);
-      movePiece(piece, state.endSquare);
-      setCanSelectPiece(true);
-      setSelectedPiece(null);
-      setCanSelectTarget(false);
-      setIsMyTurn(true);
-      setTurnColor(state.turnColor);
-
-      for (const row of board) {
-        for (const square of row) {
-          square.isLegalSquare = false;
-        }
-      }
-    });
-  }, [socket]);
 
   const processMove = (piece, endSquare) => {
     socket.emit("move-made", {
