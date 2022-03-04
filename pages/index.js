@@ -1,4 +1,7 @@
-import Board from "../components/Board";
+// import Board from "../components/Board";
+import dynamic from 'next/dynamic'
+
+const Board = dynamic(() => import('../components/Board'), { ssr: false });
 
 const Home = () => {
 
