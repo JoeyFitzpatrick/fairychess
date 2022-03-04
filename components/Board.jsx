@@ -4,6 +4,8 @@ import { convertNumToPiece, convertObjToPiece } from "./pieces";
 import { variants } from "./variants";
 import { v4 as uuidv4 } from "uuid";
 import io from "socket.io-client";
+import { useChannel } from "./AblyReactEffect";
+
 let socket;
 
 // IMPORTANT: just need to start socket connection at the beginning and it should work
@@ -26,39 +28,61 @@ const Board = ({ variant }) => {
   const [playerColor, setPlayerColor] = useState(1); // white is 1, black is -1
   const [playerQuantity, setPlayerQuantity] = useState();
 
-  useEffect(() => {
-    socketInitializer();
-  }, []);
+  const [channel, ably] = useChannel("fairychess", (message) => {
+    console.log(message)
+    const data = message.data;
+    const piece = convertObjToPiece(data.piece);
+    movePiece(piece, data.endSquare);
+    setCanSelectPiece(true);
+    setSelectedPiece(null);
+    setCanSelectTarget(false);
+    setIsMyTurn(true);
+    setTurnColor(data.turnColor);
 
-  useEffect(() => {
-    console.log(socket);
-    if (!socket) return;
-    socket.on("receive-move", (state) => {
-      const piece = convertObjToPiece(state.piece);
-      movePiece(piece, state.endSquare);
-      setCanSelectPiece(true);
-      setSelectedPiece(null);
-      setCanSelectTarget(false);
-      setIsMyTurn(true);
-      setTurnColor(state.turnColor);
-
-      for (const row of board) {
-        for (const square of row) {
-          square.isLegalSquare = false;
-        }
+    for (const row of board) {
+      for (const square of row) {
+        square.isLegalSquare = false;
       }
-    });
-  }, [socket]);
+    }
+  });
 
-  const socketInitializer = async () => {
-    await fetch("/api/socket");
-    socket = io();
-    setMySocket(socket)
+  const sendMoveMessage = (state) => {
+    channel.publish({ name: "send-move", data: state });
+  }
 
-    socket.on("connect", () => {
-      console.log("connected from board");
-    });
-  };
+//   useEffect(() => {
+//     socketInitializer();
+//   }, []);
+
+//   useEffect(() => {
+//     console.log(socket);
+//     if (!socket) return;
+//     socket.on("receive-move", (state) => {
+//       const piece = convertObjToPiece(state.piece);
+//       movePiece(piece, state.endSquare);
+//       setCanSelectPiece(true);
+//       setSelectedPiece(null);
+//       setCanSelectTarget(false);
+//       setIsMyTurn(true);
+//       setTurnColor(state.turnColor);
+
+//       for (const row of board) {
+//         for (const square of row) {
+//           square.isLegalSquare = false;
+//         }
+//       }
+//     });
+//   }, [socket]);
+
+//   const socketInitializer = async () => {
+//     await fetch("/api/socket");
+//     socket = io();
+//     setMySocket(socket)
+
+//     socket.on("connect", () => {
+//       console.log("connected from board");
+//     });
+//   };
 
   useEffect(() => {
     console.log("setting board");
@@ -117,11 +141,17 @@ const Board = ({ variant }) => {
   };
 
   const processMove = (piece, endSquare) => {
-    socket.emit("move-made", {
-      piece: piece,
-      endSquare: endSquare,
-      turnColor: turnColor * -1,
-    });
+    // socket.emit("move-made", {
+    //   piece: piece,
+    //   endSquare: endSquare,
+    //   turnColor: turnColor * -1,
+    // });
+
+    sendMoveMessage({
+        piece: piece,
+        endSquare: endSquare,
+        turnColor: turnColor * -1,
+    })
 
     movePiece(piece, endSquare);
     setCanSelectPiece(true);
