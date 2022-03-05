@@ -1,21 +1,14 @@
 import Image from "next/image";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { convertNumToPiece, convertObjToPiece } from "./pieces";
 import { variants } from "./variants";
 import { v4 as uuidv4 } from "uuid";
-import io from "socket.io-client";
 import { useChannel } from "./AblyReactEffect";
-
-let socket;
-
-// IMPORTANT: just need to start socket connection at the beginning and it should work
-// Socket starts after clicking something in each client
 
 const Board = ({ variant }) => {
   let themeColor1 = "rgba(240,217,181,255)";
   let themeColor2 = "rgba(181,136,99,255)";
 
-  const [mysocket, setMySocket] = useState();
   const [board, setBoard] = useState([]);
   const [canSelectPiece, setCanSelectPiece] = useState(true);
   const [selectedPiece, setSelectedPiece] = useState(null);
@@ -29,7 +22,7 @@ const Board = ({ variant }) => {
   const [playerQuantity, setPlayerQuantity] = useState();
 
   const [channel, ably] = useChannel("fairychess", (message) => {
-    console.log(message)
+    console.log(message);
     const data = message.data;
     const piece = convertObjToPiece(data.piece);
     movePiece(piece, data.endSquare);
@@ -48,41 +41,7 @@ const Board = ({ variant }) => {
 
   const sendMoveMessage = (state) => {
     channel.publish({ name: "send-move", data: state });
-  }
-
-//   useEffect(() => {
-//     socketInitializer();
-//   }, []);
-
-//   useEffect(() => {
-//     console.log(socket);
-//     if (!socket) return;
-//     socket.on("receive-move", (state) => {
-//       const piece = convertObjToPiece(state.piece);
-//       movePiece(piece, state.endSquare);
-//       setCanSelectPiece(true);
-//       setSelectedPiece(null);
-//       setCanSelectTarget(false);
-//       setIsMyTurn(true);
-//       setTurnColor(state.turnColor);
-
-//       for (const row of board) {
-//         for (const square of row) {
-//           square.isLegalSquare = false;
-//         }
-//       }
-//     });
-//   }, [socket]);
-
-//   const socketInitializer = async () => {
-//     await fetch("/api/socket");
-//     socket = io();
-//     setMySocket(socket)
-
-//     socket.on("connect", () => {
-//       console.log("connected from board");
-//     });
-//   };
+  };
 
   useEffect(() => {
     console.log("setting board");
@@ -141,17 +100,11 @@ const Board = ({ variant }) => {
   };
 
   const processMove = (piece, endSquare) => {
-    // socket.emit("move-made", {
-    //   piece: piece,
-    //   endSquare: endSquare,
-    //   turnColor: turnColor * -1,
-    // });
-
     sendMoveMessage({
-        piece: piece,
-        endSquare: endSquare,
-        turnColor: turnColor * -1,
-    })
+      piece: piece,
+      endSquare: endSquare,
+      turnColor: turnColor * -1,
+    });
 
     movePiece(piece, endSquare);
     setCanSelectPiece(true);
@@ -207,51 +160,6 @@ const Board = ({ variant }) => {
       }
     }
   };
-
-  // useEffect(() => {
-  //     if (socket == null) {
-  //         console.log('No socket')
-  //         return
-  //     }
-  //     socket.on('receive-move', (state) => {
-  //         console.log('Received move')
-  //         const piece = convertObjToPiece(state.piece)
-  //         movePiece(piece, state.endSquare)
-  //         setCanSelectPiece(true)
-  //         setSelectedPiece(null)
-  //         setCanSelectTarget(false)
-  //         setIsMyTurn(true)
-  //         setTurnColor(state.turnColor)
-
-  //         for (const row of board) {
-  //             for (const square of row) {
-  //                 square.isLegalSquare = false
-  //             }
-  //         }
-
-  //     })
-  // }, [])
-
-  useEffect(() => {
-    if (socket == null) return;
-
-    socket.on("receive-color", (color) => {
-      //setIsMyTurn(turnSwitch)
-
-      if (!playerColor) {
-        setPlayerColor(color);
-        color === 1 ? setIsMyTurn(true) : setIsMyTurn(false);
-      }
-    });
-  }, [playerColor]);
-
-  useEffect(() => {
-    if (socket == null) return;
-
-    socket.on("player-quantity", (obj) => {
-      setPlayerQuantity(obj.quantity);
-    });
-  }, []);
 
   // useEffect(() => {
   //     if (window.sessionStorage.getItem('board')) {
