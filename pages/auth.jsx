@@ -41,7 +41,7 @@ function Auth() {
           className="login__btn"
           onClick={() => logInWithEmailAndPassword(email, password)}
         >
-          Login
+          <Link href="/">Login</Link>
         </button>
         <div>
           <Link href="/reset">Forgot Password</Link>

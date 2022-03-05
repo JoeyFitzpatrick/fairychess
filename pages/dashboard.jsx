@@ -33,7 +33,7 @@ function Dashboard() {
         <div>{user?.email}</div>
         <Link href="/">Home</Link>
         <button className="dashboard__btn" onClick={logout}>
-          Logout
+        <Link href="/">Logout</Link>
         </button>
       </div>
     </div>
