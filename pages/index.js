@@ -3,7 +3,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../components/Auth/firebaseSetup";
 import { query, collection, getDocs, where } from "firebase/firestore";
 import { useState, useEffect } from "react";
-import Nav from "../components/Nav"
+import TopNav from "../components/TopNav"
 
 const Board = dynamic(() => import("../components/Board"), { ssr: false });
 
@@ -31,7 +31,7 @@ const Home = () => {
 
   return (
     <>
-      <Nav user={user} />
+      <TopNav user={user} />
       <Board variant="default" />
     </>
   );

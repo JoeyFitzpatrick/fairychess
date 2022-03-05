@@ -15,6 +15,11 @@ a {
   box-sizing: border-box;
 }
 
+.outer-container {
+  display: flex;
+  justify-content: center;
+}
+
 .row {
   width: 100%;
   display: flex;
@@ -26,8 +31,9 @@ a {
 }
 
 .square {
-  width: 3rem;
-  height: 3rem;
+  width: 4rem;
+  height: 4rem;
+  flex: 1;
   background-color: rgb(218, 213, 213);
   text-align: center;
   font-size: 4em;
