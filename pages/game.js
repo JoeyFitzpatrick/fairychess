@@ -9,11 +9,6 @@ import ControlBoard from "../components/ControlBoard";
 
 const Board = dynamic(() => import("../components/Board"), { ssr: false });
 
-// Features to add:
-// More variants
-// Mobile friendly
-// Match up with specific players and select variants
-
 const Game = () => {
   const [user] = useAuthState(auth);
   const [data, setData] = useState();
@@ -31,11 +26,14 @@ const Game = () => {
 
   const router = useRouter()
   console.log(router.query)
+  if (!router.query.gameId) {
+      return <div>Loading...</div>
+  }
 
   return (
     <div className="app-container">
       <TopNav user={user} />
-      <Board variant={router.query.variant} />
+      <Board variant={router.query.variant} gameId={router.query.gameId} />
       <ControlBoard user={user} data={data} />
     </div>
   );

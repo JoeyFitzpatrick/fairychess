@@ -5,7 +5,7 @@ import { variants } from "./variants";
 import { v4 as uuidv4 } from "uuid";
 import { useChannel } from "./AblyReactEffect";
 
-const Board = ({ variant }) => {
+const Board = ({ variant, gameId }) => {
   let themeColor1 = "rgba(240,217,181,255)";
   let themeColor2 = "rgba(181,136,99,255)";
 
@@ -21,7 +21,7 @@ const Board = ({ variant }) => {
   const [playerColor, setPlayerColor] = useState(1); // white is 1, black is -1
   const [playerQuantity, setPlayerQuantity] = useState();
 
-  const [channel, ably] = useChannel("fairychess", (message) => {
+  const [channel, ably] = useChannel(gameId, (message) => {
     console.log(message);
     const data = message.data;
     const piece = convertObjToPiece(data.piece);
