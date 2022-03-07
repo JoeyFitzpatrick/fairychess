@@ -1,11 +1,10 @@
 import dynamic from "next/dynamic";
-import Router from "next/router";
+import { useRouter } from 'next/router'
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../components/Auth/firebaseSetup";
 import { query, collection, getDocs, where } from "firebase/firestore";
 import { useState, useEffect } from "react";
-import Button from "react-bootstrap/Button";
-import TopNav from "../components/TopNav";
+import TopNav from "../components/TopNav"
 import ControlBoard from "../components/ControlBoard";
 
 const Board = dynamic(() => import("../components/Board"), { ssr: false });
@@ -15,7 +14,7 @@ const Board = dynamic(() => import("../components/Board"), { ssr: false });
 // Mobile friendly
 // Match up with specific players and select variants
 
-const Home = () => {
+const Game = () => {
   const [user] = useAuthState(auth);
   const [data, setData] = useState();
   useEffect(() => {
@@ -30,22 +29,16 @@ const Home = () => {
     getData();
   }, [user]);
 
-  const handleClick = (numPlayers, variant) => {
-    Router.push({
-      pathname: "/game",
-      query: { numPlayers: numPlayers, variant: variant },
-    });
-  };
+  const router = useRouter()
+  console.log(router.query)
 
   return (
-    <div>
+    <div className="app-container">
       <TopNav user={user} />
-      Welcome to Fairy Chess!
-      <Button onClick={() => handleClick(2, "default")}>Default</Button>
-      <Button onClick={() => handleClick(2, "defaultLarger")}>Bigger Board</Button>
-      <Button onClick={() => handleClick(2, "defaultSmaller")}>Smaller Board</Button>
+      <Board variant={router.query.variant} />
+      <ControlBoard user={user} data={data} />
     </div>
   );
 };
 
-export default Home;
+export default Game;

@@ -15,7 +15,21 @@ a {
   box-sizing: border-box;
 }
 
+.app-container {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+  grid-template-rows: 1fr 8fr;
+}
+
+.navbar-container {
+  grid-column-start: 1;
+  grid-column-end: -1;
+  grid-row-start: 1;
+}
+
 .outer-container {
+  grid-column-start: 2;
+  grid-row-start: 2;
   display: flex;
   justify-content: center;
 }
@@ -23,11 +37,6 @@ a {
 .row {
   width: 100%;
   display: flex;
-}
-
-.inner-container {
-  grid-column-start: 2;
-  grid-row-start: 2;
 }
 
 .square {
@@ -45,6 +54,13 @@ a {
 .piece-img {
   height: 60px;
   width: 60px;
+}
+
+.controlboard-container {
+  grid-column-start: 3;
+  grid-row-start: 2;
+  display: flex;
+  flex-direction: column;
 }
 
 .login {

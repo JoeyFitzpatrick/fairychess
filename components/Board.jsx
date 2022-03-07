@@ -187,7 +187,7 @@ const Board = ({ variant }) => {
 
   const boardDisplayWhite = () => {
     return (
-      <div className={"outer-container flex justify-center"}>
+      <div className={"outer-container"}>
         {gameOver && <div>Game is over</div>}
         {whiteWins && <div>White wins</div>}
         {blackWins && <div>Black wins</div>}

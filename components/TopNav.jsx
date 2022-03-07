@@ -6,7 +6,7 @@ import Container from "react-bootstrap/Container";
 
 const TopNav = ({ user }) => {
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar bg="light" expand="lg" className="navbar-container">
       <Container>
         <Navbar.Brand href="#home">Fairy Chess</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
