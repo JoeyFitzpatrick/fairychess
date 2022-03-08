@@ -22,7 +22,6 @@ const Board = ({ variant, gameId, numPlayers }) => {
   const [playerQuantity, setPlayerQuantity] = useState(numPlayers);
 
   const [channel, ably] = useChannel(gameId, (message) => {
-    console.log(message);
     const data = message.data;
     const piece = convertObjToPiece(data.piece);
     movePiece(piece, data.endSquare);

@@ -1,25 +1,52 @@
 import Ably from "ably/promises";
-import { useEffect } from 'react'
+import { useEffect } from "react";
 
-const ably = new Ably.Realtime.Promise({ authUrl: '/api/createTokenRequest' });
+const ably = new Ably.Realtime.Promise({ authUrl: "/api/createTokenRequest" });
 
 export function useChannel(channelName, callbackOnMessage) {
-    const channel = ably.channels.get(channelName);
-
-    const onMount = () => {
-        channel.subscribe(msg => { callbackOnMessage(msg); });
+  const channel = ably.channels.get(channelName);
+  channel.attach(function (err) {
+    if (err) {
+      return console.error("Error attaching to the channel");
     }
-
-    const onUnmount = () => {
-        channel.unsubscribe();
+    console.log("We are now attached to the channel");
+    channel.presence.enter("hello", function (err) {
+      if (err) {
+        return console.error("Error entering presence");
+      }
+      console.log("We are now successfully present");
+    });
+  });
+  channel.presence.get(function (err, members) {
+    if (err) {
+      return console.error("Error fetching presence data");
     }
+    console.log(
+      "There are " + members.length + " clients present on this channel"
+    );
+    var first = members[0];
+    console.log("The first member is " + first.clientId);
+    console.log("and their data is " + first.data);
+  });
 
-    const useEffectHook = () => {
-        onMount();
-        return () => { onUnmount(); };
+  const onMount = () => {
+    channel.subscribe((msg) => {
+      callbackOnMessage(msg);
+    });
+  };
+
+  const onUnmount = () => {
+    channel.unsubscribe();
+  };
+
+  const useEffectHook = () => {
+    onMount();
+    return () => {
+      onUnmount();
     };
+  };
 
-    useEffect(useEffectHook);
+  useEffect(useEffectHook);
 
-    return [channel, ably];
+  return [channel, ably];
 }

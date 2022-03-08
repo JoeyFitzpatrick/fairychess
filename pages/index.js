@@ -38,7 +38,6 @@ const Home = () => {
     window.sessionStorage.removeItem('gameOver');
     window.sessionStorage.removeItem('playerColor');
     window.sessionStorage.removeItem('playerQuantity');
-    console.log(sessionStorage)
 }, []);
 
   const handleClick = (numPlayers, variant) => {
