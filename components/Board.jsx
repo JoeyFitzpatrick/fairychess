@@ -19,11 +19,11 @@ const Board = ({ variant, gameId, numPlayers }) => {
   const [blackWins, setBlackWins] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [playerColor, setPlayerColor] = useState(1); // white is 1, black is -1
-  const [playerQuantity, setPlayerQuantity] = useState(numPlayers);
+  const [playerQuantity, setPlayerQuantity] = useState();
 
-  const [channel, ably, numP] = useChannel(gameId, (message) => {
+  const [channel, ably, numUsers] = useChannel(gameId, (message) => {
+    setPlayerQuantity(numUsers);
     const data = message.data;
-    console.log(numP)
     const piece = convertObjToPiece(data.piece);
     movePiece(piece, data.endSquare);
     setCanSelectPiece(true);
@@ -42,6 +42,10 @@ const Board = ({ variant, gameId, numPlayers }) => {
   const sendMoveMessage = (state) => {
     channel.publish({ name: "send-move", data: state });
   };
+
+  channel.subscribe("send-move", (message) => {
+    console.log("received move")
+  })
 
   useEffect(() => {
     console.log("setting board");
@@ -162,28 +166,39 @@ const Board = ({ variant, gameId, numPlayers }) => {
   };
 
   useEffect(() => {
-      if (window.sessionStorage.getItem('board')) {
-      setBoard(convertBoardFromJSON(window.sessionStorage.getItem('board')));
-      setTurnColor(JSON.parse(window.sessionStorage.getItem('turnColor')));
-      setIsMyTurn(JSON.parse(window.sessionStorage.getItem('isMyTurn')));
-      setWhiteWins(JSON.parse(window.sessionStorage.getItem('whiteWins')));
-      setBlackWins(JSON.parse(window.sessionStorage.getItem('blackWins')));
-      setGameOver(JSON.parse(window.sessionStorage.getItem('gameOver')));
-      setPlayerColor(JSON.parse(window.sessionStorage.getItem('playerColor')));
-      setPlayerQuantity(JSON.parse(window.sessionStorage.getItem('playerQuantity')));
-      }
+    if (window.sessionStorage.getItem("board")) {
+      setBoard(convertBoardFromJSON(window.sessionStorage.getItem("board")));
+      setTurnColor(JSON.parse(window.sessionStorage.getItem("turnColor")));
+      setIsMyTurn(JSON.parse(window.sessionStorage.getItem("isMyTurn")));
+      setWhiteWins(JSON.parse(window.sessionStorage.getItem("whiteWins")));
+      setBlackWins(JSON.parse(window.sessionStorage.getItem("blackWins")));
+      setGameOver(JSON.parse(window.sessionStorage.getItem("gameOver")));
+      setPlayerColor(JSON.parse(window.sessionStorage.getItem("playerColor")));
+      setPlayerQuantity(
+        JSON.parse(window.sessionStorage.getItem("playerQuantity"))
+      );
+    }
   }, []);
 
   useEffect(() => {
-      window.sessionStorage.setItem('board', (JSON.stringify(board)));
-      window.sessionStorage.setItem('turnColor', turnColor);
-      window.sessionStorage.setItem('isMyTurn', isMyTurn);
-      window.sessionStorage.setItem('whiteWins', whiteWins);
-      window.sessionStorage.setItem('blackWins', blackWins);
-      window.sessionStorage.setItem('gameOver', gameOver);
-      window.sessionStorage.setItem('playerColor', playerColor);
-      window.sessionStorage.setItem('playerQuantity', playerQuantity);
-  }, [board, turnColor, isMyTurn, whiteWins, blackWins, gameOver, playerColor, playerQuantity]);
+    window.sessionStorage.setItem("board", JSON.stringify(board));
+    window.sessionStorage.setItem("turnColor", turnColor);
+    window.sessionStorage.setItem("isMyTurn", isMyTurn);
+    window.sessionStorage.setItem("whiteWins", whiteWins);
+    window.sessionStorage.setItem("blackWins", blackWins);
+    window.sessionStorage.setItem("gameOver", gameOver);
+    window.sessionStorage.setItem("playerColor", playerColor);
+    window.sessionStorage.setItem("playerQuantity", playerQuantity);
+  }, [
+    board,
+    turnColor,
+    isMyTurn,
+    whiteWins,
+    blackWins,
+    gameOver,
+    playerColor,
+    playerQuantity,
+  ]);
 
   const boardDisplayWhite = () => {
     return (
@@ -205,8 +220,8 @@ const Board = ({ variant, gameId, numPlayers }) => {
                         backgroundColor:
                           (j + i) % 2 === 0 ? themeColor1 : themeColor2,
                         border: item.isLegalSquare && "2px solid green",
-                        width: `${100/(row.length)}%`,
-                        maxWidth: "55px"
+                        width: `${100 / row.length}%`,
+                        maxWidth: "55px",
                       }}
                     >
                       {item.pieceNum ? (

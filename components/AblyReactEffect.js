@@ -17,10 +17,10 @@ export function useChannel(channelName, callbackOnMessage) {
       }
     });
   });
-  let numPlayers
+  let numUsers
   channel.presence.get(function(err, members) {
     if(err) { return console.error("Error fetching presence data"); }
-    numPlayers = members.length;
+    numUsers = members.length;
   });
 
   const onMount = () => {
@@ -42,5 +42,5 @@ export function useChannel(channelName, callbackOnMessage) {
 
   useEffect(useEffectHook);
 
-  return [channel, ably, numPlayers];
+  return [channel, ably, numUsers];
 }
