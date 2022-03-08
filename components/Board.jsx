@@ -21,8 +21,9 @@ const Board = ({ variant, gameId, numPlayers }) => {
   const [playerColor, setPlayerColor] = useState(1); // white is 1, black is -1
   const [playerQuantity, setPlayerQuantity] = useState(numPlayers);
 
-  const [channel, ably] = useChannel(gameId, (message) => {
+  const [channel, ably, numP] = useChannel(gameId, (message) => {
     const data = message.data;
+    console.log(numP)
     const piece = convertObjToPiece(data.piece);
     movePiece(piece, data.endSquare);
     setCanSelectPiece(true);

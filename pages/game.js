@@ -28,7 +28,6 @@ const Game = () => {
   }, [user]);
 
   const router = useRouter();
-  console.log(router.query);
   if (!router.query.gameId) {
     return <div>Loading...</div>;
   }

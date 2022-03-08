@@ -1,6 +1,8 @@
 import Ably from "ably/promises";
 import { useEffect } from "react";
 
+// Info on getting number of users on Ably channel can be found here: https://ably.com/tutorials/presence#tutorial-step-4
+
 const ably = new Ably.Realtime.Promise({ authUrl: "/api/createTokenRequest" });
 
 export function useChannel(channelName, callbackOnMessage) {
@@ -9,24 +11,16 @@ export function useChannel(channelName, callbackOnMessage) {
     if (err) {
       return console.error("Error attaching to the channel");
     }
-    console.log("We are now attached to the channel");
     channel.presence.enter("hello", function (err) {
       if (err) {
         return console.error("Error entering presence");
       }
-      console.log("We are now successfully present");
     });
   });
-  channel.presence.get(function (err, members) {
-    if (err) {
-      return console.error("Error fetching presence data");
-    }
-    console.log(
-      "There are " + members.length + " clients present on this channel"
-    );
-    var first = members[0];
-    console.log("The first member is " + first.clientId);
-    console.log("and their data is " + first.data);
+  let numPlayers
+  channel.presence.get(function(err, members) {
+    if(err) { return console.error("Error fetching presence data"); }
+    numPlayers = members.length;
   });
 
   const onMount = () => {
@@ -48,5 +42,5 @@ export function useChannel(channelName, callbackOnMessage) {
 
   useEffect(useEffectHook);
 
-  return [channel, ably];
+  return [channel, ably, numPlayers];
 }
