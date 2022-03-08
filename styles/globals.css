@@ -32,6 +32,7 @@ a {
   grid-row-start: 2;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .inner-container {
@@ -43,6 +44,8 @@ a {
   width: 100%;
   display: flex;
   border: 1px solid coral;
+  justify-content: center;
+  align-items: center;
 }
 
 .square {

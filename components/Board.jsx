@@ -205,7 +205,8 @@ const Board = ({ variant, gameId }) => {
                         backgroundColor:
                           (j + i) % 2 === 0 ? themeColor1 : themeColor2,
                         border: item.isLegalSquare && "2px solid green",
-                        width: `${65/row.length}%`
+                        width: `${100/(row.length)}%`,
+                        maxWidth: "55px"
                       }}
                     >
                       {item.pieceNum ? (

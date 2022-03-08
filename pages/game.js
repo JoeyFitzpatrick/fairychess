@@ -39,13 +39,13 @@ const Game = () => {
       <Container fluid>
         <Row>
           <Col></Col>
-          <Col lg={8}>
+          <Col md={8}>
             <Board
               variant={router.query.variant}
               gameId={router.query.gameId}
             />
           </Col>
-          <Col style={{backgroundColor: "red"}}>
+          <Col>
             <ControlBoard user={user} data={data} />
           </Col>
         </Row>
