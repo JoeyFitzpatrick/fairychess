@@ -5,7 +5,7 @@ import { variants } from "./variants";
 import { v4 as uuidv4 } from "uuid";
 import { useChannel } from "./AblyReactEffect";
 
-const Board = ({ variant, gameId }) => {
+const Board = ({ variant, gameId, numPlayers }) => {
   let themeColor1 = "rgba(240,217,181,255)";
   let themeColor2 = "rgba(181,136,99,255)";
 
@@ -19,7 +19,7 @@ const Board = ({ variant, gameId }) => {
   const [blackWins, setBlackWins] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [playerColor, setPlayerColor] = useState(1); // white is 1, black is -1
-  const [playerQuantity, setPlayerQuantity] = useState();
+  const [playerQuantity, setPlayerQuantity] = useState(numPlayers);
 
   const [channel, ably] = useChannel(gameId, (message) => {
     console.log(message);
@@ -161,29 +161,29 @@ const Board = ({ variant, gameId }) => {
     }
   };
 
-  // useEffect(() => {
-  //     if (window.sessionStorage.getItem('board')) {
-  //     setBoard(convertBoardFromJSON(window.sessionStorage.getItem('board')));
-  //     setTurnColor(JSON.parse(window.sessionStorage.getItem('turnColor')));
-  //     setIsMyTurn(JSON.parse(window.sessionStorage.getItem('isMyTurn')));
-  //     setWhiteWins(JSON.parse(window.sessionStorage.getItem('whiteWins')));
-  //     setBlackWins(JSON.parse(window.sessionStorage.getItem('blackWins')));
-  //     setGameOver(JSON.parse(window.sessionStorage.getItem('gameOver')));
-  //     setPlayerColor(JSON.parse(window.sessionStorage.getItem('playerColor')));
-  //     setPlayerQuantity(JSON.parse(window.sessionStorage.getItem('playerQuantity')));
-  //     }
-  // }, []);
+  useEffect(() => {
+      if (window.sessionStorage.getItem('board')) {
+      setBoard(convertBoardFromJSON(window.sessionStorage.getItem('board')));
+      setTurnColor(JSON.parse(window.sessionStorage.getItem('turnColor')));
+      setIsMyTurn(JSON.parse(window.sessionStorage.getItem('isMyTurn')));
+      setWhiteWins(JSON.parse(window.sessionStorage.getItem('whiteWins')));
+      setBlackWins(JSON.parse(window.sessionStorage.getItem('blackWins')));
+      setGameOver(JSON.parse(window.sessionStorage.getItem('gameOver')));
+      setPlayerColor(JSON.parse(window.sessionStorage.getItem('playerColor')));
+      setPlayerQuantity(JSON.parse(window.sessionStorage.getItem('playerQuantity')));
+      }
+  }, []);
 
-  // useEffect(() => {
-  //     window.sessionStorage.setItem('board', (JSON.stringify(board)));
-  //     window.sessionStorage.setItem('turnColor', turnColor);
-  //     window.sessionStorage.setItem('isMyTurn', isMyTurn);
-  //     window.sessionStorage.setItem('whiteWins', whiteWins);
-  //     window.sessionStorage.setItem('blackWins', blackWins);
-  //     window.sessionStorage.setItem('gameOver', gameOver);
-  //     window.sessionStorage.setItem('playerColor', playerColor);
-  //     window.sessionStorage.setItem('playerQuantity', playerQuantity);
-  // }, [board, turnColor, isMyTurn, whiteWins, blackWins, gameOver, playerColor, playerQuantity]);
+  useEffect(() => {
+      window.sessionStorage.setItem('board', (JSON.stringify(board)));
+      window.sessionStorage.setItem('turnColor', turnColor);
+      window.sessionStorage.setItem('isMyTurn', isMyTurn);
+      window.sessionStorage.setItem('whiteWins', whiteWins);
+      window.sessionStorage.setItem('blackWins', blackWins);
+      window.sessionStorage.setItem('gameOver', gameOver);
+      window.sessionStorage.setItem('playerColor', playerColor);
+      window.sessionStorage.setItem('playerQuantity', playerQuantity);
+  }, [board, turnColor, isMyTurn, whiteWins, blackWins, gameOver, playerColor, playerQuantity]);
 
   const boardDisplayWhite = () => {
     return (

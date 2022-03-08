@@ -27,6 +27,29 @@ a {
   grid-row-start: 1;
 }
 
+.home-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.numPlayers-selectors {
+  display: flex;
+  justify-content: center;
+}
+
+.numPlayers-select {
+  margin-left: 3%;
+  margin-right: 3%;
+}
+
+.game-select-button {
+  height: 10rem;
+  aspect-ratio: 1/1;
+  margin: 1rem;
+  font-size: 1.5rem;;
+}
+
 .outer-container {
   grid-column-start: 2;
   grid-row-start: 2;
@@ -37,13 +60,11 @@ a {
 
 .inner-container {
   width: 100%;
-  border: 1px solid black;
 }
 
 .board-row {
   width: 100%;
   display: flex;
-  border: 1px solid coral;
   justify-content: center;
   align-items: center;
 }
