@@ -10,7 +10,6 @@ import { v4 as uuidv4 } from "uuid";
 // Features to add:
 // More variants
 // Mobile friendly
-// Match up with specific players and select variants
 
 const Home = () => {
   const [user] = useAuthState(auth);

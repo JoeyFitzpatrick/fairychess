@@ -1,11 +1,14 @@
 import dynamic from "next/dynamic";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "../components/Auth/firebaseSetup";
 import { query, collection, getDocs, where } from "firebase/firestore";
 import { useState, useEffect } from "react";
-import TopNav from "../components/TopNav"
+import TopNav from "../components/TopNav";
 import ControlBoard from "../components/ControlBoard";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 const Board = dynamic(() => import("../components/Board"), { ssr: false });
 
@@ -24,17 +27,29 @@ const Game = () => {
     getData();
   }, [user]);
 
-  const router = useRouter()
-  console.log(router.query)
+  const router = useRouter();
+  console.log(router.query);
   if (!router.query.gameId) {
-      return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   return (
-    <div className="app-container">
+    <div className="">
       <TopNav user={user} />
-      <Board variant={router.query.variant} gameId={router.query.gameId} />
-      <ControlBoard user={user} data={data} />
+      <Container fluid>
+        <Row>
+          <Col></Col>
+          <Col lg={8}>
+            <Board
+              variant={router.query.variant}
+              gameId={router.query.gameId}
+            />
+          </Col>
+          <Col style={{backgroundColor: "red"}}>
+            <ControlBoard user={user} data={data} />
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 };

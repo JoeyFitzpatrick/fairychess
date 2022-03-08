@@ -194,7 +194,7 @@ const Board = ({ variant, gameId }) => {
         <div className="inner-container">
           {board.map((row, i) => {
             return (
-              <div key={uuidv4()} className="row">
+              <div key={uuidv4()} className="board-row">
                 {row.map((item, j) => {
                   return (
                     <div
@@ -205,14 +205,17 @@ const Board = ({ variant, gameId }) => {
                         backgroundColor:
                           (j + i) % 2 === 0 ? themeColor1 : themeColor2,
                         border: item.isLegalSquare && "2px solid green",
+                        width: `${65/row.length}%`
                       }}
                     >
                       {item.pieceNum ? (
                         <Image
+                          className="piece-img"
                           src={"/" + item.imageUrl}
                           alt={`Chess piece, id is ${item.imageUrl}`}
-                          height="60px"
-                          width="60px"
+                          height="40"
+                          width="40"
+                          // layout="responsive"
                         />
                       ) : null}
                     </div>
@@ -238,7 +241,7 @@ const Board = ({ variant, gameId }) => {
             .reverse()
             .map((row, i) => {
               return (
-                <div key={uuidv4()} className="row">
+                <div key={uuidv4()} className="board-row">
                   {row
                     .slice(0)
                     .reverse()
@@ -256,11 +259,9 @@ const Board = ({ variant, gameId }) => {
                         >
                           {item.pieceNum ? (
                             <Image
-                              className="h-full"
+                              className="piece-img"
                               src={"/" + item.imageUrl}
                               alt={`Chess piece, id is ${item.imageUrl}`}
-                              height="60px"
-                              width="60px"
                             />
                           ) : null}
                         </div>
@@ -280,7 +281,7 @@ const Board = ({ variant, gameId }) => {
   if (playerColor === -1) {
     return boardDisplayBlack();
   }
-  return <div>Not connected to server</div>;
+  return <div>Could not decide player color </div>;
 };
 
 export default Board;
