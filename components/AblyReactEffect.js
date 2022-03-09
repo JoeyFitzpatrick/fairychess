@@ -7,21 +7,6 @@ const ably = new Ably.Realtime.Promise({ authUrl: "/api/createTokenRequest" });
 
 export function useChannel(channelName, callbackOnMessage) {
   const channel = ably.channels.get(channelName);
-  channel.attach(function (err) {
-    if (err) {
-      return console.error("Error attaching to the channel");
-    }
-    channel.presence.enter("hello", function (err) {
-      if (err) {
-        return console.error("Error entering presence");
-      }
-    });
-  });
-  let numUsers
-  channel.presence.get(function(err, members) {
-    if(err) { return console.error("Error fetching presence data"); }
-    numUsers = members.length;
-  });
 
   const onMount = () => {
     channel.subscribe((msg) => {
@@ -42,5 +27,5 @@ export function useChannel(channelName, callbackOnMessage) {
 
   useEffect(useEffectHook);
 
-  return [channel, ably, numUsers];
+  return [channel, ably];
 }

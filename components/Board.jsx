@@ -20,21 +20,27 @@ const Board = ({ variant, gameId, numPlayers }) => {
   const [gameOver, setGameOver] = useState(false);
   const [playerColor, setPlayerColor] = useState(1); // white is 1, black is -1
   const [playerQuantity, setPlayerQuantity] = useState();
+  const [connectionIds, setConnectionIds] = useState([]);
 
-  const [channel, ably, numUsers] = useChannel(gameId, (message) => {
-    setPlayerQuantity(numUsers);
-    const data = message.data;
-    const piece = convertObjToPiece(data.piece);
-    movePiece(piece, data.endSquare);
-    setCanSelectPiece(true);
-    setSelectedPiece(null);
-    setCanSelectTarget(false);
-    setIsMyTurn(true);
-    setTurnColor(data.turnColor);
+  const [channel, ably] = useChannel(gameId, (message) => {
+    if (message.name === "init") {
+      setConnectionIds([...connectionIds, message.connectionId])
+      console.log("connectionId from init:", message.connectionId);
+      console.log("array of ids:", connectionIds);
+    } else {
+      const data = message.data;
+      const piece = convertObjToPiece(data.piece);
+      movePiece(piece, data.endSquare);
+      setCanSelectPiece(true);
+      setSelectedPiece(null);
+      setCanSelectTarget(false);
+      setIsMyTurn(true);
+      setTurnColor(data.turnColor);
 
-    for (const row of board) {
-      for (const square of row) {
-        square.isLegalSquare = false;
+      for (const row of board) {
+        for (const square of row) {
+          square.isLegalSquare = false;
+        }
       }
     }
   });
@@ -43,12 +49,16 @@ const Board = ({ variant, gameId, numPlayers }) => {
     channel.publish({ name: "send-move", data: state });
   };
 
-  channel.subscribe("send-move", (message) => {
-    console.log("received move")
-  })
+  const sendInitMessage = (msg) => {
+    // let numUsers
+    // channel.presence.get(function(err, members) {
+    //   if(err) { return console.error("Error fetching presence data"); }
+    //   numUsers = members.length;
+    // });
+    channel.publish({ name: "init", data: "Init received" })
+  }
 
   useEffect(() => {
-    console.log("setting board");
     setBoard(
       variants[variant].map((row, j) => {
         return row.map((item, i) => {
@@ -56,6 +66,7 @@ const Board = ({ variant, gameId, numPlayers }) => {
         });
       })
     );
+    sendInitMessage("Init sent")
   }, []);
 
   const convertBoardFromJSON = (jsonBoard) => {
@@ -165,40 +176,40 @@ const Board = ({ variant, gameId, numPlayers }) => {
     }
   };
 
-  useEffect(() => {
-    if (window.sessionStorage.getItem("board")) {
-      setBoard(convertBoardFromJSON(window.sessionStorage.getItem("board")));
-      setTurnColor(JSON.parse(window.sessionStorage.getItem("turnColor")));
-      setIsMyTurn(JSON.parse(window.sessionStorage.getItem("isMyTurn")));
-      setWhiteWins(JSON.parse(window.sessionStorage.getItem("whiteWins")));
-      setBlackWins(JSON.parse(window.sessionStorage.getItem("blackWins")));
-      setGameOver(JSON.parse(window.sessionStorage.getItem("gameOver")));
-      setPlayerColor(JSON.parse(window.sessionStorage.getItem("playerColor")));
-      setPlayerQuantity(
-        JSON.parse(window.sessionStorage.getItem("playerQuantity"))
-      );
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (window.sessionStorage.getItem("board")) {
+  //     setBoard(convertBoardFromJSON(window.sessionStorage.getItem("board")));
+  //     setTurnColor(JSON.parse(window.sessionStorage.getItem("turnColor")));
+  //     setIsMyTurn(JSON.parse(window.sessionStorage.getItem("isMyTurn")));
+  //     setWhiteWins(JSON.parse(window.sessionStorage.getItem("whiteWins")));
+  //     setBlackWins(JSON.parse(window.sessionStorage.getItem("blackWins")));
+  //     setGameOver(JSON.parse(window.sessionStorage.getItem("gameOver")));
+  //     setPlayerColor(JSON.parse(window.sessionStorage.getItem("playerColor")));
+  //     setPlayerQuantity(
+  //       JSON.parse(window.sessionStorage.getItem("playerQuantity"))
+  //     );
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    window.sessionStorage.setItem("board", JSON.stringify(board));
-    window.sessionStorage.setItem("turnColor", turnColor);
-    window.sessionStorage.setItem("isMyTurn", isMyTurn);
-    window.sessionStorage.setItem("whiteWins", whiteWins);
-    window.sessionStorage.setItem("blackWins", blackWins);
-    window.sessionStorage.setItem("gameOver", gameOver);
-    window.sessionStorage.setItem("playerColor", playerColor);
-    window.sessionStorage.setItem("playerQuantity", playerQuantity);
-  }, [
-    board,
-    turnColor,
-    isMyTurn,
-    whiteWins,
-    blackWins,
-    gameOver,
-    playerColor,
-    playerQuantity,
-  ]);
+  // useEffect(() => {
+  //   window.sessionStorage.setItem("board", JSON.stringify(board));
+  //   window.sessionStorage.setItem("turnColor", turnColor);
+  //   window.sessionStorage.setItem("isMyTurn", isMyTurn);
+  //   window.sessionStorage.setItem("whiteWins", whiteWins);
+  //   window.sessionStorage.setItem("blackWins", blackWins);
+  //   window.sessionStorage.setItem("gameOver", gameOver);
+  //   window.sessionStorage.setItem("playerColor", playerColor);
+  //   window.sessionStorage.setItem("playerQuantity", playerQuantity);
+  // }, [
+  //   board,
+  //   turnColor,
+  //   isMyTurn,
+  //   whiteWins,
+  //   blackWins,
+  //   gameOver,
+  //   playerColor,
+  //   playerQuantity,
+  // ]);
 
   const boardDisplayWhite = () => {
     return (
@@ -231,7 +242,6 @@ const Board = ({ variant, gameId, numPlayers }) => {
                           alt={`Chess piece, id is ${item.imageUrl}`}
                           height="40"
                           width="40"
-                          // layout="responsive"
                         />
                       ) : null}
                     </div>
@@ -271,6 +281,8 @@ const Board = ({ variant, gameId, numPlayers }) => {
                             backgroundColor:
                               (j + i) % 2 === 0 ? themeColor1 : themeColor2,
                             border: item.isLegalSquare && "2px solid green",
+                            width: `${100 / row.length}%`,
+                            maxWidth: "55px",
                           }}
                         >
                           {item.pieceNum ? (
@@ -278,6 +290,8 @@ const Board = ({ variant, gameId, numPlayers }) => {
                               className="piece-img"
                               src={"/" + item.imageUrl}
                               alt={`Chess piece, id is ${item.imageUrl}`}
+                              height="40"
+                              width="40"
                             />
                           ) : null}
                         </div>
