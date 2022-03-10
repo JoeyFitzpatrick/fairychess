@@ -3,7 +3,8 @@ import React, { useState, useEffect } from "react";
 import { convertNumToPiece, convertObjToPiece } from "./pieces";
 import { variants } from "./variants";
 import { v4 as uuidv4 } from "uuid";
-import { useChannel } from "./AblyReactEffect";
+import Pusher from "pusher-js"
+let channels;
 
 const Board = ({ variant, gameId, numPlayers }) => {
   let themeColor1 = "rgba(240,217,181,255)";
@@ -20,43 +21,53 @@ const Board = ({ variant, gameId, numPlayers }) => {
   const [gameOver, setGameOver] = useState(false);
   const [playerColor, setPlayerColor] = useState(1); // white is 1, black is -1
   const [playerQuantity, setPlayerQuantity] = useState();
-  const [connectionIds, setConnectionIds] = useState([]);
 
-  const [channel, ably] = useChannel(gameId, (message) => {
-    if (message.name === "init") {
-      setConnectionIds([...connectionIds, message.connectionId])
-      console.log("connectionId from init:", message.connectionId);
-      console.log("array of ids:", connectionIds);
-    } else {
-      const data = message.data;
-      const piece = convertObjToPiece(data.piece);
-      movePiece(piece, data.endSquare);
-      setCanSelectPiece(true);
-      setSelectedPiece(null);
-      setCanSelectTarget(false);
-      setIsMyTurn(true);
-      setTurnColor(data.turnColor);
+  useEffect(() => {
+    let channels = new Pusher('a947234c1b07f8f8f701', {
+      cluster: 'us2',
+    });
+    let channel = channels.subscribe(gameId);
+    channel.bind('receive-move', function (data) {
+      handleReceiveMove(data);
+    });
+    return () => {
+      channels.unsubscribe(gameId);
+    };
+  }, [])
 
-      for (const row of board) {
-        for (const square of row) {
-          square.isLegalSquare = false;
-        }
+  async function pushData(data) {
+    data.channel = gameId;
+    const res = await fetch('/api/channels-event', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      console.error('failed to push data');
+    }
+  }
+
+  const handleReceiveMove = (data) => {
+    const piece = convertObjToPiece(data.piece);
+    movePiece(piece, data.endSquare);
+    setCanSelectPiece(true);
+    setSelectedPiece(null);
+    setCanSelectTarget(false);
+    setIsMyTurn(true);
+    setTurnColor(data.turnColor);
+
+    for (const row of board) {
+      for (const square of row) {
+        square.isLegalSquare = false;
       }
     }
-  });
-
-  const sendMoveMessage = (state) => {
-    channel.publish({ name: "send-move", data: state });
-  };
-
-  const sendInitMessage = (msg) => {
-    // let numUsers
-    // channel.presence.get(function(err, members) {
-    //   if(err) { return console.error("Error fetching presence data"); }
-    //   numUsers = members.length;
-    // });
-    channel.publish({ name: "init", data: "Init received" })
   }
+
+  const sendMoveMessage = (data) => {
+    pushData(data);
+  };
 
   useEffect(() => {
     setBoard(
@@ -66,7 +77,6 @@ const Board = ({ variant, gameId, numPlayers }) => {
         });
       })
     );
-    sendInitMessage("Init sent")
   }, []);
 
   const convertBoardFromJSON = (jsonBoard) => {
