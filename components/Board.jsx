@@ -4,6 +4,7 @@ import { convertNumToPiece, convertObjToPiece } from "./pieces";
 import { variants } from "./variants";
 import { v4 as uuidv4 } from "uuid";
 import { useChannel } from "./AblyReactEffect";
+import Button from "react-bootstrap/Button";
 
 const Board = ({ variant, gameId, numPlayers }) => {
   let themeColor1 = "rgba(240,217,181,255)";
@@ -18,13 +19,12 @@ const Board = ({ variant, gameId, numPlayers }) => {
   const [whiteWins, setWhiteWins] = useState(false);
   const [blackWins, setBlackWins] = useState(false);
   const [gameOver, setGameOver] = useState(false);
-  const [playerColor, setPlayerColor] = useState(1); // white is 1, black is -1
-  const [playerQuantity, setPlayerQuantity] = useState();
+  const [playerColor, setPlayerColor] = useState(); // white is 1, black is -1
   const [connectionIds, setConnectionIds] = useState([]);
 
   const [channel, ably] = useChannel(gameId, (message) => {
     if (message.name === "init") {
-      setConnectionIds([...connectionIds, message.connectionId])
+      setConnectionIds([...connectionIds, message.connectionId]);
       console.log("connectionId from init:", message.connectionId);
       console.log("array of ids:", connectionIds);
     } else {
@@ -55,8 +55,8 @@ const Board = ({ variant, gameId, numPlayers }) => {
     //   if(err) { return console.error("Error fetching presence data"); }
     //   numUsers = members.length;
     // });
-    channel.publish({ name: "init", data: "Init received" })
-  }
+    channel.publish({ name: "init", data: "Init received" });
+  };
 
   useEffect(() => {
     setBoard(
@@ -66,7 +66,7 @@ const Board = ({ variant, gameId, numPlayers }) => {
         });
       })
     );
-    sendInitMessage("Init sent")
+    sendInitMessage("Init sent");
   }, []);
 
   const convertBoardFromJSON = (jsonBoard) => {
@@ -136,8 +136,11 @@ const Board = ({ variant, gameId, numPlayers }) => {
   };
 
   const clickSquare = (piece) => {
-    if (playerQuantity === 2) {
+    if (numPlayers === "2") {
       if (!isMyTurn) {
+        return;
+      }
+      if (turnColor !== playerColor) {
         return;
       }
     }
@@ -311,7 +314,27 @@ const Board = ({ variant, gameId, numPlayers }) => {
   if (playerColor === -1) {
     return boardDisplayBlack();
   }
-  return <div>Could not decide player color </div>;
+  return (
+    <div>
+      <h3>Select color</h3>
+      <Button
+        onClick={() => {
+          setPlayerColor(1);
+          setIsMyTurn(true);
+        }}
+      >
+        White
+      </Button>
+      <Button
+        onClick={() => {
+          setPlayerColor(-1);
+          setIsMyTurn(false);
+        }}
+      >
+        Black
+      </Button>
+    </div>
+  );
 };
 
 export default Board;
