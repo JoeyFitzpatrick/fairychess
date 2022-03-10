@@ -33,7 +33,7 @@ const Board = ({ variant, gameId, numPlayers }) => {
     return () => {
       channels.unsubscribe(gameId);
     };
-  }, [])
+  }, [board])
 
   async function pushData(data) {
     data.channel = gameId;
