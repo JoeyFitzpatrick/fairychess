@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { convertNumToPiece, convertObjToPiece } from "./pieces";
 import { variants } from "./variants";
 import { v4 as uuidv4 } from "uuid";
-import Pusher from "pusher-js"
+import Pusher from "pusher-js";
 let channels;
 
 const Board = ({ variant, gameId, numPlayers }) => {
@@ -23,29 +23,40 @@ const Board = ({ variant, gameId, numPlayers }) => {
   const [playerQuantity, setPlayerQuantity] = useState();
 
   useEffect(() => {
-    let channels = new Pusher('a947234c1b07f8f8f701', {
-      cluster: 'us2',
+    let channels = new Pusher("a947234c1b07f8f8f701", {
+      cluster: "us2",
     });
     let channel = channels.subscribe(gameId);
-    channel.bind('receive-move', function (data) {
+
+    channel.bind("receive-move", function (data) {
       handleReceiveMove(data);
     });
+
+    channel.bind("init", function (data) {
+      console.log(JSON.stringify(data));
+    });
+
     return () => {
       channels.unsubscribe(gameId);
     };
-  }, [board])
+  }, [board]);
 
-  async function pushData(data) {
+  useEffect(() => {
+    pushData({ message: "init from client" }, "init");
+  }, []);
+
+  async function pushData(data, event) {
+    data.event = event;
     data.channel = gameId;
-    const res = await fetch('/api/channels-event', {
-      method: 'POST',
+    const res = await fetch("/api/channels-event", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
     if (!res.ok) {
-      console.error('failed to push data');
+      console.error("failed to push data");
     }
   }
 
@@ -63,10 +74,10 @@ const Board = ({ variant, gameId, numPlayers }) => {
         square.isLegalSquare = false;
       }
     }
-  }
+  };
 
   const sendMoveMessage = (data) => {
-    pushData(data);
+    pushData(data, "send-move");
   };
 
   useEffect(() => {
