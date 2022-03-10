@@ -17,7 +17,7 @@ export default function handler(req, res) {
   }
 
   if (data.event === "init") {
-    pusher.trigger(data.channel, "init", { message: "init" }, () => {
+    pusher.trigger(data.channel, "receive-init", { message: "init" }, () => {
       console.log("sent event");
     });
   }

@@ -4,7 +4,7 @@ import { convertNumToPiece, convertObjToPiece } from "./pieces";
 import { variants } from "./variants";
 import { v4 as uuidv4 } from "uuid";
 import Pusher from "pusher-js";
-let channels;
+import Button from "react-bootstrap/Button";
 
 const Board = ({ variant, gameId, numPlayers }) => {
   let themeColor1 = "rgba(240,217,181,255)";
@@ -19,20 +19,19 @@ const Board = ({ variant, gameId, numPlayers }) => {
   const [whiteWins, setWhiteWins] = useState(false);
   const [blackWins, setBlackWins] = useState(false);
   const [gameOver, setGameOver] = useState(false);
-  const [playerColor, setPlayerColor] = useState(1); // white is 1, black is -1
-  const [playerQuantity, setPlayerQuantity] = useState();
+  const [playerColor, setPlayerColor] = useState(); // white is 1, black is -1
 
   useEffect(() => {
-    let channels = new Pusher("a947234c1b07f8f8f701", {
+    const channels = new Pusher("a947234c1b07f8f8f701", {
       cluster: "us2",
     });
-    let channel = channels.subscribe(gameId);
+    const channel = channels.subscribe(gameId);
 
     channel.bind("receive-move", function (data) {
       handleReceiveMove(data);
     });
 
-    channel.bind("init", function (data) {
+    channel.bind("receive-init", function (data) {
       console.log(JSON.stringify(data));
     });
 
@@ -157,8 +156,11 @@ const Board = ({ variant, gameId, numPlayers }) => {
   };
 
   const clickSquare = (piece) => {
-    if (playerQuantity === 2) {
+    if (numPlayers === "2") {
       if (!isMyTurn) {
+        return;
+      }
+      if (turnColor !== playerColor) {
         return;
       }
     }
@@ -332,7 +334,27 @@ const Board = ({ variant, gameId, numPlayers }) => {
   if (playerColor === -1) {
     return boardDisplayBlack();
   }
-  return <div>Could not decide player color </div>;
+  return (
+    <div>
+      <h3>Select color</h3>
+      <Button
+        onClick={() => {
+          setPlayerColor(1);
+          setIsMyTurn(true);
+        }}
+      >
+        White
+      </Button>
+      <Button
+        onClick={() => {
+          setPlayerColor(-1);
+          setIsMyTurn(false);
+        }}
+      >
+        Black
+      </Button>
+    </div>
+  );
 };
 
 export default Board;
