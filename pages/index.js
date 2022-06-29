@@ -1,7 +1,5 @@
 import Router from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, db } from "../components/Auth/firebaseSetup";
-import { query, collection, getDocs, where } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
@@ -14,20 +12,8 @@ import { v4 as uuidv4 } from "uuid";
 // More variants
 
 const Home = () => {
-  const [user] = useAuthState(auth);
   const [data, setData] = useState();
   const [numPlayers, setNumPlayers] = useState(2);
-  useEffect(() => {
-    const getData = async () => {
-      if (user) {
-        const q = query(collection(db, "users"), where("uid", "==", user?.uid));
-        const doc = await getDocs(q);
-        const data = doc.docs[0].data();
-        setData(data);
-      }
-    };
-    getData();
-  }, [user]);
 
   useEffect(() => {
     window.sessionStorage.removeItem('board');
@@ -49,7 +35,7 @@ const Home = () => {
 
   return (
     <div>
-      <TopNav user={user} />
+      <TopNav />
       <Container>
         <Row>
           <Col>
