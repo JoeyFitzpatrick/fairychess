@@ -40,6 +40,12 @@ export const convertNumToPiece = (pieceNum, x, y) => {
         
         case -6:
             return new Rook(x, y, false)
+
+        case 7:
+            return new Nightrider(x, y, true)
+        
+        case -7:
+            return new Nightrider(x, y, false)
         
         default:
             return "Error: piece number not defined"
@@ -290,3 +296,12 @@ class Pawn extends Piece {
     }
 }
 
+class Nightrider extends Piece {
+    constructor(x, y, isWhite) {
+        super(x, y, isWhite)
+        this.pieceNum = 7 * this.color
+        this.imageUrl = this.colorCode + "NR.png"
+        this.possibleX = [1, 1, -1, -1, 2, 2, -2, -2]
+        this.possibleY = [2, -2, 2, -2, 1, -1, 1, -1]
+    }
+}

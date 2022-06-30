@@ -1,5 +1,4 @@
 import Router from "next/router";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
@@ -75,6 +74,8 @@ const Home = () => {
                 1 Device
               </Button>
             </div>
+
+            {/* TODO: make this list of variants dynamic */}
             <Button
               className="game-select-button"
               variant="outline-primary"
@@ -95,6 +96,13 @@ const Home = () => {
               onClick={() => handleClick(numPlayers, "defaultSmaller")}
             >
               Smaller Board
+            </Button>
+            <Button
+              className="game-select-button"
+              variant="outline-primary"
+              onClick={() => handleClick(numPlayers, "newPieceTesting")}
+            >
+              New Piece Testing Zone
             </Button>
           </Col>
         </Row>

@@ -1,7 +1,5 @@
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { useState, useEffect } from "react";
 import TopNav from "../components/TopNav";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
