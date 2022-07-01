@@ -140,7 +140,7 @@ class Rook extends Piece {
     constructor(x, y, isWhite) {
         super(x, y, isWhite)
         this.pieceNum = 6 * this.color
-        this.imageUrl = this.colorCode + "R.png"
+        this.imageUrl = this.colorCode + "R.svg"
         this.possibleX = [1, -1, 0, 0]
         this.possibleY = [0, 0, 1, -1]
     }
@@ -150,7 +150,7 @@ class Knight extends Piece {
     constructor(x, y, isWhite) {
         super(x, y, isWhite)
         this.pieceNum = 5 * this.color
-        this.imageUrl = this.colorCode + "N.png"
+        this.imageUrl = this.colorCode + "N.svg"
     }
 
     getLegalSquares(boardState) {
@@ -178,7 +178,7 @@ class Bishop extends Piece {
     constructor(x, y, isWhite) {
         super(x, y, isWhite)
         this.pieceNum = 4 * this.color
-        this.imageUrl = this.colorCode + "B.png"
+        this.imageUrl = this.colorCode + "B.svg"
         this.possibleX = [1, -1, 1, -1]
         this.possibleY = [1, 1, -1, -1]
     }
@@ -188,7 +188,7 @@ class Queen extends Piece {
     constructor(x, y, isWhite) {
         super(x, y, isWhite)
         this.pieceNum = 3 * this.color
-        this.imageUrl = this.colorCode + "Q.png"
+        this.imageUrl = this.colorCode + "Q.svg"
         this.possibleX = [1, -1, 1, -1, 1, -1, 0, 0]
         this.possibleY = [1, 1, -1, -1, 0, 0, 1, -1]
     }
@@ -198,7 +198,7 @@ class King extends Piece {
     constructor(x, y, isWhite) {
         super(x, y, isWhite)
         this.pieceNum = 2 * this.color
-        this.imageUrl = this.colorCode + "K.png"
+        this.imageUrl = this.colorCode + "K.svg"
         this.isKing = true
     }
 
@@ -227,7 +227,7 @@ class Pawn extends Piece {
     constructor(x, y, isWhite) {
         super(x, y, isWhite)
         this.pieceNum = 1 * this.color
-        this.imageUrl = this.colorCode + "p.png"
+        this.imageUrl = this.colorCode + "p.svg"
         this.isFirstMove = true
     }
 
@@ -300,7 +300,7 @@ class Nightrider extends Piece {
     constructor(x, y, isWhite) {
         super(x, y, isWhite)
         this.pieceNum = 7 * this.color
-        this.imageUrl = this.colorCode + "NR.png"
+        this.imageUrl = this.colorCode + "NR.svg"
         this.possibleX = [1, 1, -1, -1, 2, 2, -2, -2]
         this.possibleY = [2, -2, 2, -2, 1, -1, 1, -1]
     }

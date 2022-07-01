@@ -6,24 +6,23 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import TopNav from "../components/TopNav";
 import { v4 as uuidv4 } from "uuid";
+import { variants } from "../components/variants";
 
-// Features to add:
-// More variants
+// TODO: implement classes to make piece creation more extensible
 
 const Home = () => {
-  const [data, setData] = useState();
-  const [numPlayers, setNumPlayers] = useState(2);
+  const [numPlayers, setNumPlayers] = useState(1);
 
   useEffect(() => {
-    window.sessionStorage.removeItem('board');
-    window.sessionStorage.removeItem('turnColor');
-    window.sessionStorage.removeItem('isMyTurn');
-    window.sessionStorage.removeItem('whiteWins');
-    window.sessionStorage.removeItem('blackWins');
-    window.sessionStorage.removeItem('gameOver');
-    window.sessionStorage.removeItem('playerColor');
-    window.sessionStorage.removeItem('playerQuantity');
-}, []);
+    window.sessionStorage.removeItem("board");
+    window.sessionStorage.removeItem("turnColor");
+    window.sessionStorage.removeItem("isMyTurn");
+    window.sessionStorage.removeItem("whiteWins");
+    window.sessionStorage.removeItem("blackWins");
+    window.sessionStorage.removeItem("gameOver");
+    window.sessionStorage.removeItem("playerColor");
+    window.sessionStorage.removeItem("playerQuantity");
+  }, []);
 
   const handleClick = (numPlayers, variant) => {
     Router.push({
@@ -31,6 +30,16 @@ const Home = () => {
       query: { numPlayers: numPlayers, variant: variant, gameId: uuidv4() },
     });
   };
+
+  const variantArray = Object.keys(variants);
+  const variantButtonConfig = variantArray.map((variant, key) => (
+    <Button
+      key={key}
+      className="game-select-button"
+      variant="outline-primary"
+      onClick={() => handleClick(numPlayers, variant)}
+    >{`${variant}`}</Button>
+  ));
 
   return (
     <div>
@@ -75,35 +84,7 @@ const Home = () => {
               </Button>
             </div>
 
-            {/* TODO: make this list of variants dynamic */}
-            <Button
-              className="game-select-button"
-              variant="outline-primary"
-              onClick={() => handleClick(numPlayers, "default")}
-            >
-              Default
-            </Button>
-            <Button
-              className="game-select-button"
-              variant="outline-primary"
-              onClick={() => handleClick(numPlayers, "defaultLarger")}
-            >
-              Bigger Board
-            </Button>
-            <Button
-              className="game-select-button"
-              variant="outline-primary"
-              onClick={() => handleClick(numPlayers, "defaultSmaller")}
-            >
-              Smaller Board
-            </Button>
-            <Button
-              className="game-select-button"
-              variant="outline-primary"
-              onClick={() => handleClick(numPlayers, "newPieceTesting")}
-            >
-              New Piece Testing Zone
-            </Button>
+            <>{variantButtonConfig}</>
           </Col>
         </Row>
       </Container>

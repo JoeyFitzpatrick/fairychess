@@ -42,8 +42,8 @@ export const newPieceTesting = [
 ]
 
 export const variants = {
-    "default": boardDefault,
-    "defaultLarger": defaultLarger,
-    "defaultSmaller": defaultSmaller,
-    "newPieceTesting": newPieceTesting
+    "Default": boardDefault,
+    "Big Board": defaultLarger,
+    "Small Board": defaultSmaller,
+    "New Piece Testing Zone": newPieceTesting
 }
