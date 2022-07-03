@@ -7,21 +7,29 @@ import Col from "react-bootstrap/Col";
 import TopNav from "../components/TopNav";
 import { v4 as uuidv4 } from "uuid";
 import { variants } from "../components/variants";
+import CountdownTimer from '../components/timer/CountdownTimer';
 
-// TODO: implement classes to make piece creation more extensible
+// TODO: add play clocks
+// TODO: display red when king in check
+// TODO: add "secret king" mode
 
 const Home = () => {
   const [numPlayers, setNumPlayers] = useState(1);
 
   useEffect(() => {
-    window.sessionStorage.removeItem("board");
-    window.sessionStorage.removeItem("turnColor");
-    window.sessionStorage.removeItem("isMyTurn");
-    window.sessionStorage.removeItem("whiteWins");
-    window.sessionStorage.removeItem("blackWins");
-    window.sessionStorage.removeItem("gameOver");
-    window.sessionStorage.removeItem("playerColor");
-    window.sessionStorage.removeItem("playerQuantity");
+    const storageItemsToDelete = [
+      "board",
+      "turnColor",
+      "isMyTurn",
+      "whiteWins",
+      "blackWins",
+      "gameOver",
+      "playerColor",
+      "playerQuantity",
+    ];
+    storageItemsToDelete.forEach((item) =>
+      window.sessionStorage.removeItem(item)
+    );
   }, []);
 
   const handleClick = (numPlayers, variant) => {
@@ -41,9 +49,15 @@ const Home = () => {
     >{`${variant}`}</Button>
   ));
 
+  const now = new Date().getTime();
+  const later = 60 * 1000;
+  const time = now + later;
+
   return (
     <div>
       <TopNav />
+      <h1>Countdown Timer</h1>
+      <CountdownTimer targetDate={time} />
       <Container>
         <Row>
           <Col>
