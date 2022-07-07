@@ -179,41 +179,6 @@ const Board = ({ variant, gameId, numPlayers }) => {
     }
   };
 
-  // useEffect(() => {
-  //   if (window.sessionStorage.getItem("board")) {
-  //     setBoard(convertBoardFromJSON(window.sessionStorage.getItem("board")));
-  //     setTurnColor(JSON.parse(window.sessionStorage.getItem("turnColor")));
-  //     setIsMyTurn(JSON.parse(window.sessionStorage.getItem("isMyTurn")));
-  //     setWhiteWins(JSON.parse(window.sessionStorage.getItem("whiteWins")));
-  //     setBlackWins(JSON.parse(window.sessionStorage.getItem("blackWins")));
-  //     setGameOver(JSON.parse(window.sessionStorage.getItem("gameOver")));
-  //     setPlayerColor(JSON.parse(window.sessionStorage.getItem("playerColor")));
-  //     setPlayerQuantity(
-  //       JSON.parse(window.sessionStorage.getItem("playerQuantity"))
-  //     );
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   window.sessionStorage.setItem("board", JSON.stringify(board));
-  //   window.sessionStorage.setItem("turnColor", turnColor);
-  //   window.sessionStorage.setItem("isMyTurn", isMyTurn);
-  //   window.sessionStorage.setItem("whiteWins", whiteWins);
-  //   window.sessionStorage.setItem("blackWins", blackWins);
-  //   window.sessionStorage.setItem("gameOver", gameOver);
-  //   window.sessionStorage.setItem("playerColor", playerColor);
-  //   window.sessionStorage.setItem("playerQuantity", playerQuantity);
-  // }, [
-  //   board,
-  //   turnColor,
-  //   isMyTurn,
-  //   whiteWins,
-  //   blackWins,
-  //   gameOver,
-  //   playerColor,
-  //   playerQuantity,
-  // ]);
-
   const boardDisplayWhite = () => {
     return (
       <div className={"outer-container"}>
@@ -243,8 +208,8 @@ const Board = ({ variant, gameId, numPlayers }) => {
                           className="piece-img"
                           src={"/" + item.imageUrl}
                           alt={`Chess piece, id is ${item.imageUrl}`}
-                          height="40"
-                          width="40"
+                          height="50"
+                          width="50"
                         />
                       ) : null}
                     </div>
@@ -293,8 +258,8 @@ const Board = ({ variant, gameId, numPlayers }) => {
                               className="piece-img"
                               src={"/" + item.imageUrl}
                               alt={`Chess piece, id is ${item.imageUrl}`}
-                              height="40"
-                              width="40"
+                              height="50"
+                              width="50"
                             />
                           ) : null}
                         </div>
