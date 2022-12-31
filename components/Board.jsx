@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useChannel } from "./AblyReactEffect";
 import Button from "react-bootstrap/Button";
 
-const Board = ({ variant, gameId, numPlayers }) => {
+const Board = ({ variant, gameId, numPlayers, socket }) => {
   let themeColor1 = "rgba(240,217,181,255)";
   let themeColor2 = "rgba(181,136,99,255)";
 
@@ -21,42 +21,59 @@ const Board = ({ variant, gameId, numPlayers }) => {
   const [gameOver, setGameOver] = useState(false);
   const [playerColor, setPlayerColor] = useState(); // white is 1, black is -1
   const [connectionIds, setConnectionIds] = useState([]);
+  
+  
+  // let socket = null;
+  // function connect() {
+  //   if (!gameId) {
+  //     console.log("No room id, cannot send msg")
+  //     return null
+  //   }
+  //   if (!socket) {
+  //     console.log("There was no socket")
+  //     socket = new WebSocket(`ws://localhost:8000/ws/${gameId}`);
+  //     socket.onmessage = function (event) {
+  //       console.log(event.data);
+  //     };
+  //   }
+  // }
+  
+  function sendMsg(msg) {
+    // connect()
+    // console.log(socket)
+    socket.send(msg);
+  }
 
-  const [channel, ably] = useChannel(gameId, (message) => {
-    if (message.name === "init") {
-      setConnectionIds([...connectionIds, message.connectionId]);
-      console.log("connectionId from init:", message.connectionId);
-      console.log("array of ids:", connectionIds);
-    } else {
-      const data = message.data;
-      const piece = convertObjToPiece(data.piece);
-      movePiece(piece, data.endSquare);
-      setCanSelectPiece(true);
-      setSelectedPiece(null);
-      setCanSelectTarget(false);
-      setIsMyTurn(true);
-      setTurnColor(data.turnColor);
+  // const [channel, ably] = usechannel(gameid, (message) => {
+  //   if (message.name === "init") {
+  //     setconnectionids([...connectionids, message.connectionid]);
+  //     console.log("connectionid from init:", message.connectionid);
+  //     console.log("array of ids:", connectionids);
+  //   } else {
+  //     const data = message.data;
+  //     const piece = convertobjtopiece(data.piece);
+  //     movepiece(piece, data.endsquare);
+  //     setcanselectpiece(true);
+  //     setselectedpiece(null);
+  //     setcanselecttarget(false);
+  //     setismyturn(true);
+  //     setturncolor(data.turncolor);
 
-      for (const row of board) {
-        for (const square of row) {
-          square.isLegalSquare = false;
-        }
-      }
-    }
-  });
+  //     for (const row of board) {
+  //       for (const square of row) {
+  //         square.islegalsquare = false;
+  //       }
+  //     }
+  //   }
+  // });
 
-  const sendMoveMessage = (state) => {
-    channel.publish({ name: "send-move", data: state });
-  };
+  // const sendMoveMessage = (state) => {
+  //   channel.publish({ name: "send-move", data: state });
+  // };
 
-  const sendInitMessage = (msg) => {
-    // let numUsers
-    // channel.presence.get(function(err, members) {
-    //   if(err) { return console.error("Error fetching presence data"); }
-    //   numUsers = members.length;
-    // });
-    channel.publish({ name: "init", data: "Init received" });
-  };
+  // const sendInitMessage = (msg) => {
+  //   channel.publish({ name: "init", data: "Init received" });
+  // };
 
   useEffect(() => {
     setBoard(
@@ -66,7 +83,7 @@ const Board = ({ variant, gameId, numPlayers }) => {
         });
       })
     );
-    sendInitMessage("Init sent");
+    // sendInitMessage("Init sent");
   }, []);
 
   const convertBoardFromJSON = (jsonBoard) => {
@@ -112,14 +129,15 @@ const Board = ({ variant, gameId, numPlayers }) => {
     boardCopy[endSquare.x][endSquare.y] = piece;
     setBoard(boardCopy);
     checkGameOver();
+    sendMsg("sending msg from send move")
   };
 
   const processMove = (piece, endSquare) => {
-    sendMoveMessage({
-      piece: piece,
-      endSquare: endSquare,
-      turnColor: turnColor * -1,
-    });
+    // sendMoveMessage({
+    //   piece: piece,
+    //   endSquare: endSquare,
+    //   turnColor: turnColor * -1,
+    // });
 
     movePiece(piece, endSquare);
     setCanSelectPiece(true);

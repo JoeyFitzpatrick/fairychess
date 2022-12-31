@@ -13,6 +13,12 @@ const Game = () => {
   if (!router.query.gameId) {
     return <div>Loading...</div>;
   }
+  
+  const socket = new WebSocket(`ws://localhost:8000/ws/${router.query.gameId}`);
+  console.log("socket created")
+  socket.onmessage = function (event) {
+    console.log(event.data);
+  };
 
   return (
     <div className="">
@@ -25,6 +31,7 @@ const Game = () => {
               variant={router.query.variant}
               gameId={router.query.gameId}
               numPlayers={router.query.numPlayers}
+              socket={socket}
             />
           </Col>
           <Col>
