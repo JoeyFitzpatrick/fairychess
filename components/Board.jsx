@@ -3,10 +3,10 @@ import React, { useState, useEffect } from "react";
 import { convertNumToPiece, convertObjToPiece } from "./pieces";
 import { variants } from "./variants";
 import { v4 as uuidv4 } from "uuid";
-import { useChannel } from "./AblyReactEffect";
 import Button from "react-bootstrap/Button";
+import { socket } from "../hooks/useChannel";
 
-const Board = ({ variant, gameId, numPlayers, socket }) => {
+const Board = ({ variant, numPlayers }) => {
   let themeColor1 = "rgba(240,217,181,255)";
   let themeColor2 = "rgba(181,136,99,255)";
 
@@ -20,60 +20,11 @@ const Board = ({ variant, gameId, numPlayers, socket }) => {
   const [blackWins, setBlackWins] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [playerColor, setPlayerColor] = useState(); // white is 1, black is -1
-  const [connectionIds, setConnectionIds] = useState([]);
   
-  
-  // let socket = null;
-  // function connect() {
-  //   if (!gameId) {
-  //     console.log("No room id, cannot send msg")
-  //     return null
-  //   }
-  //   if (!socket) {
-  //     console.log("There was no socket")
-  //     socket = new WebSocket(`ws://localhost:8000/ws/${gameId}`);
-  //     socket.onmessage = function (event) {
-  //       console.log(event.data);
-  //     };
-  //   }
-  // }
-  
-  function sendMsg(msg) {
-    // connect()
-    // console.log(socket)
+  function sendMove(msg) {
+    console.log(msg)
     socket.send(msg);
   }
-
-  // const [channel, ably] = usechannel(gameid, (message) => {
-  //   if (message.name === "init") {
-  //     setconnectionids([...connectionids, message.connectionid]);
-  //     console.log("connectionid from init:", message.connectionid);
-  //     console.log("array of ids:", connectionids);
-  //   } else {
-  //     const data = message.data;
-  //     const piece = convertobjtopiece(data.piece);
-  //     movepiece(piece, data.endsquare);
-  //     setcanselectpiece(true);
-  //     setselectedpiece(null);
-  //     setcanselecttarget(false);
-  //     setismyturn(true);
-  //     setturncolor(data.turncolor);
-
-  //     for (const row of board) {
-  //       for (const square of row) {
-  //         square.islegalsquare = false;
-  //       }
-  //     }
-  //   }
-  // });
-
-  // const sendMoveMessage = (state) => {
-  //   channel.publish({ name: "send-move", data: state });
-  // };
-
-  // const sendInitMessage = (msg) => {
-  //   channel.publish({ name: "init", data: "Init received" });
-  // };
 
   useEffect(() => {
     setBoard(
@@ -129,15 +80,19 @@ const Board = ({ variant, gameId, numPlayers, socket }) => {
     boardCopy[endSquare.x][endSquare.y] = piece;
     setBoard(boardCopy);
     checkGameOver();
-    sendMsg("sending msg from send move")
   };
 
+  socket.onmessage = (e) => {
+    console.log(e.data)
+  }
+
   const processMove = (piece, endSquare) => {
-    // sendMoveMessage({
-    //   piece: piece,
-    //   endSquare: endSquare,
-    //   turnColor: turnColor * -1,
-    // });
+    sendMove({
+      type: 'move',
+      piece: piece,
+      endSquare: endSquare,
+      turnColor: turnColor * -1,
+    });
 
     movePiece(piece, endSquare);
     setCanSelectPiece(true);

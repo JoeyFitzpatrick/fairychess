@@ -8,3 +8,7 @@ A list of different pieces to add can be [found here.](https://www.chessvariants
 Piece images are from [greenchess.net](https://greenchess.net/info.php?item=downloads)
 
 Most of the timer code was written by [Tapas Adhikary](https://www.tapasadhikary.com/)
+
+To run locally:
+* Navigate to the server directory, then run `uvicorn main:app --reload`
+* From the root dir, run `npx next dev`

@@ -12,14 +12,10 @@ const Game = () => {
   const router = useRouter();
   if (!router.query.gameId) {
     return <div>Loading...</div>;
+  } else {
+    
   }
-  
-  const socket = new WebSocket(`ws://localhost:8000/ws/${router.query.gameId}`);
-  console.log("socket created")
-  socket.onmessage = function (event) {
-    console.log(event.data);
-  };
-
+ 
   return (
     <div className="">
       <TopNav />
@@ -29,9 +25,7 @@ const Game = () => {
           <Col md={8}>
             <Board
               variant={router.query.variant}
-              gameId={router.query.gameId}
               numPlayers={router.query.numPlayers}
-              socket={socket}
             />
           </Col>
           <Col>

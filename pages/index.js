@@ -13,6 +13,8 @@ import CountdownTimer from '../components/timer/CountdownTimer';
 // TODO: display red when king in check
 // TODO: add "secret king" mode
 
+export const gameId = uuidv4();
+
 const Home = () => {
   const [numPlayers, setNumPlayers] = useState(1);
 
@@ -35,7 +37,7 @@ const Home = () => {
   const handleClick = (numPlayers, variant) => {
     Router.push({
       pathname: "/game",
-      query: { numPlayers: numPlayers, variant: variant, gameId: uuidv4() },
+      query: { numPlayers: numPlayers, variant: variant, gameId: gameId },
     });
   };
 

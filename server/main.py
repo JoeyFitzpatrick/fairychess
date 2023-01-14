@@ -34,6 +34,7 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str):
         while True:
             data = await websocket.receive_text()
             msg = f"New msg for room {room_id}: {data}"
+            print(data)
             # await manager.emit(websocket, msg, room_id)
             await manager.broadcast(msg, room_id)
     except WebSocketDisconnect:
