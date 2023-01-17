@@ -26,6 +26,7 @@ const Game = () => {
             <Board
               variant={router.query.variant}
               numPlayers={router.query.numPlayers}
+              gameId={router.query.gameId}
             />
           </Col>
           <Col>

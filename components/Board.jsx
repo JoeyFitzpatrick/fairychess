@@ -4,9 +4,22 @@ import { convertNumToPiece, convertObjToPiece } from "./pieces";
 import { variants } from "./variants";
 import { v4 as uuidv4 } from "uuid";
 import Button from "react-bootstrap/Button";
-import { socket } from "../hooks/useChannel";
 
-const Board = ({ variant, numPlayers }) => {
+
+const Board = ({ variant, numPlayers, gameId }) => {
+
+  const [socket, setSocket] = useState()  
+  
+  useEffect(() => {
+    setSocket(new WebSocket(`ws://localhost:8000/ws/${gameId}`))
+  }, [gameId])
+
+  if (socket) {
+    socket.onmessage = (msg) => {
+      console.log(msg)
+    }
+  }
+
   let themeColor1 = "rgba(240,217,181,255)";
   let themeColor2 = "rgba(181,136,99,255)";
 
@@ -81,10 +94,6 @@ const Board = ({ variant, numPlayers }) => {
     setBoard(boardCopy);
     checkGameOver();
   };
-
-  socket.onmessage = (e) => {
-    console.log(e.data)
-  }
 
   const processMove = (piece, endSquare) => {
     sendMove({
