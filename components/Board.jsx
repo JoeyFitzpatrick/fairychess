@@ -16,7 +16,13 @@ const Board = ({ variant, numPlayers, gameId }) => {
 
   if (socket) {
     socket.onmessage = (msg) => {
-      console.log(msg)
+      const data = JSON.parse(msg.data)
+      console.log(data);
+      if (data.type === 'move') {
+        movePiece(data.piece, data.endSquare)
+      } else {
+        console.log(msg.data.type)
+      }
     }
   }
 
@@ -35,8 +41,8 @@ const Board = ({ variant, numPlayers, gameId }) => {
   const [playerColor, setPlayerColor] = useState(); // white is 1, black is -1
   
   function sendMove(msg) {
-    console.log(msg)
-    socket.send(msg);
+    const msgAsJson = JSON.stringify(msg)
+    socket.send(msgAsJson);
   }
 
   useEffect(() => {

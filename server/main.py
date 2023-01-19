@@ -24,8 +24,7 @@ manager = ConnectionManager()
 
 async def handler(websocket, path):
     data = await websocket.recv()
-    reply = f"Data recieved as:  {data}!"
-    await websocket.send(reply)
+    await websocket.send(data)
 
 @app.websocket("/ws/{room_id}")
 async def websocket_endpoint(websocket: WebSocket, room_id: str):
@@ -33,10 +32,9 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str):
     try:
         while True:
             data = await websocket.receive_text()
-            msg = f"New msg for room {room_id}: {data}"
-            print(data)
-            # await manager.emit(websocket, msg, room_id)
-            await manager.broadcast(msg, room_id)
+            msg = data
+            await manager.emit(websocket, msg, room_id)
+            # await manager.broadcast(msg, room_id)
     except WebSocketDisconnect:
         manager.disconnect(websocket, room_id)
         await manager.broadcast(f"A player left the game", room_id)
