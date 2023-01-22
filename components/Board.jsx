@@ -14,12 +14,26 @@ const Board = ({ variant, numPlayers, gameId }) => {
     setSocket(new WebSocket(`ws://localhost:8000/ws/${gameId}`))
   }, [gameId])
 
+  
+  
+  function findPieceOrSquare(jsonPiece) {
+    const possiblePiece = board[jsonPiece.x][jsonPiece.y]
+    console.log(possiblePiece)
+    console.log(jsonPiece)
+    if (possiblePiece.color === jsonPiece.color && possiblePiece.pieceNum === jsonPiece.pieceNum) {
+      return possiblePiece
+    }
+    return null
+  }
+
   if (socket) {
     socket.onmessage = (msg) => {
       const data = JSON.parse(msg.data)
       console.log(data);
       if (data.type === 'move') {
-        movePiece(data.piece, data.endSquare)
+        const piece = findPieceOrSquare(data.piece)
+        const square = findPieceOrSquare(data.endSquare)
+        movePiece(piece, square)
       } else {
         console.log(msg.data.type)
       }
