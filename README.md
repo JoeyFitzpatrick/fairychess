@@ -12,3 +12,9 @@ Most of the timer code was written by [Tapas Adhikary](https://www.tapasadhikary
 To run locally:
 * Navigate to the server directory, then run `uvicorn main:app --reload`
 * From the root dir, run `npx next dev`
+
+### Todo
+* refactor board helper function to be color-agnostic
+* random board has two issues: moves cannot be processed, and board is not the same between two players. 
+* perhaps random board generation should be handled server side?
+* or maybe the server can just generate a seed that is used by the front end for randomization
