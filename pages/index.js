@@ -7,7 +7,7 @@ import Col from "react-bootstrap/Col";
 import TopNav from "../components/TopNav";
 import { v4 as uuidv4 } from "uuid";
 import { variants } from "../components/variants";
-import CountdownTimer from '../components/timer/CountdownTimer';
+import styles from "../styles/Home.module.css";
 
 // TODO: add play clocks
 // TODO: display red when king in check
@@ -45,21 +45,15 @@ const Home = () => {
   const variantButtonConfig = variantArray.map((variant, key) => (
     <Button
       key={key}
-      className="game-select-button"
+      className={styles.card}
       variant="outline-primary"
       onClick={() => handleClick(numPlayers, variant)}
     >{`${variant}`}</Button>
   ));
 
-  const now = new Date().getTime();
-  const later = 60 * 1000;
-  const time = now + later;
-
   return (
-    <div>
+    <div className={styles.home}>
       <TopNav />
-      <h1>Countdown Timer</h1>
-      <CountdownTimer targetDate={time} />
       <Container>
         <Row>
           <Col>

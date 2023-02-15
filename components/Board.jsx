@@ -4,6 +4,7 @@ import { convertNumToPiece, convertObjToPiece } from "./pieces";
 import { variants } from "./variants";
 import { v4 as uuidv4 } from "uuid";
 import Button from "react-bootstrap/Button";
+import CountdownTimer from "./timer/CountdownTimer";
 
 
 const Board = ({ variant, numPlayers, gameId }) => {
@@ -15,6 +16,9 @@ const Board = ({ variant, numPlayers, gameId }) => {
   }, [gameId])
 
   
+  const now = new Date().getTime();
+  const later = 60 * 1000;
+  const time = now + later;
   
   function findPieceOrSquare(jsonPiece) {
     const possiblePiece = board[jsonPiece.x][jsonPiece.y]
@@ -188,6 +192,8 @@ const Board = ({ variant, numPlayers, gameId }) => {
         {whiteWins && <div>White wins</div>}
         {blackWins && <div>Black wins</div>}
         <div className="inner-container">
+          <h1>Countdown Timer</h1>
+          <CountdownTimer targetDate={time} />
           {board.map((row, i) => {
             return (
               <div key={uuidv4()} className="board-row">
