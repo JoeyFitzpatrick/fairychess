@@ -6,6 +6,7 @@ import { variants } from "../components/variants";
 import styles from "../styles/Home.module.css";
 import VariantCard from "../components/VariantCard";
 
+// TODO: Fix dependencies when upgrading Next to 13
 // TODO: add play clocks
 // TODO: display red when king in check
 // TODO: add "secret king" mode

@@ -1,8 +1,8 @@
 import Image from "next/image"
 import styles from "../styles/Home.module.css";
-import { Inter } from '@next/font/google'
+// import { Inter } from '@next/font/google'
 
-const inter = Inter({ subsets: ['latin'] })
+// const inter = Inter({ subsets: ['latin'] })
 
 function VariantCard({ key, className, variant, onClick }) {
   return (
