@@ -1,3 +1,8 @@
+:root {
+  --color-main-background: #e2ddd3;
+  --color-dotteds-rgb: 34, 34, 34;
+}
+
 html,
 body {
   padding: 0;
