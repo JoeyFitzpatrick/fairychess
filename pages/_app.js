@@ -1,11 +1,14 @@
 import "../styles/globals.css";
-import { useEffect } from "react";
+import { Montserrat } from '@next/font/google'
+
+const montserrat = Montserrat({ subsets: ['latin'] })
 
 function MyApp({ Component, pageProps }) {
-  useEffect(() => {
-    // import("bootstrap/dist/js/bootstrap");
-  }, []);
-  return <Component {...pageProps} />;
+  return (
+    <main className={montserrat.className}>
+      <Component {...pageProps} />
+    </main>
+  )
 }
 
 export default MyApp;

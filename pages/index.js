@@ -52,7 +52,7 @@ const Home = () => {
     <div className={styles.home}>
       <TopNav />
       <div className={styles.header}>
-        <h2>Fairy Chess</h2>
+        <p>Fairy Chess</p>
       </div>
       <div className={styles.subheader}>
         <p>This is basically Chess 2.0</p>

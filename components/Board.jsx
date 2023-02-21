@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { convertNumToPiece, convertObjToPiece } from "./pieces";
 import { variants } from "./variants";
 import { v4 as uuidv4 } from "uuid";
-import Button from "react-bootstrap/Button";
 import CountdownTimer from "./timer/CountdownTimer";
 
 
@@ -290,22 +289,22 @@ const Board = ({ variant, numPlayers, gameId }) => {
   return (
     <div>
       <h3>Select color</h3>
-      <Button
+      <button
         onClick={() => {
           setPlayerColor(1);
           setIsMyTurn(true);
         }}
       >
         White
-      </Button>
-      <Button
+      </button>
+      <button
         onClick={() => {
           setPlayerColor(-1);
           setIsMyTurn(false);
         }}
       >
         Black
-      </Button>
+      </button>
     </div>
   );
 };
