@@ -58,3 +58,11 @@
 .cardInfo {
   width: 50%;
 }
+
+.cardVariantTitle {
+  font-size: 1.5em;
+}
+
+.cardVariantDescription {
+  font-size: 0.8em;
+}

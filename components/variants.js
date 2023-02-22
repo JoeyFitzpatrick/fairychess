@@ -73,6 +73,14 @@ export const variants = {
     "New Piece Testing Zone": newPieceTesting
 }
 
+export const variantDescriptions = {
+    "Default": "Standard chess.",
+    "Big Board": "Standard, but with a bigger board.",
+    "Small Board": "Standard, but with a smaller board.",
+    "Default Random Both Sides Same": "Both players get the same randomized set of pieces. Standard board size.",
+    "New Piece Testing Zone": "Just foolin around."
+}
+
 function emptyBoard(length, width) {
     return Array.from(Array(length), _ => Array(width).fill(0));
 }

@@ -2,11 +2,12 @@ import Router from "next/router";
 import { useState, useEffect } from "react";
 import TopNav from "../components/TopNav";
 import { v4 as uuidv4 } from "uuid";
-import { variants } from "../components/variants";
+import { variantDescriptions } from "../components/variants";
 import styles from "../styles/Home.module.css";
 import VariantCard from "../components/VariantCard";
 
-// TODO: Fix dependencies when upgrading Next to 13
+// TODO: improve UI by adding lichess-style colored outline for valid move squares
+// TODO: implement drag and drop 
 // TODO: add play clocks
 // TODO: display red when king in check
 // TODO: add "secret king" mode
@@ -16,22 +17,6 @@ export const gameId = uuidv4();
 const Home = () => {
   const [numPlayers, setNumPlayers] = useState(1);
 
-  useEffect(() => {
-    const storageItemsToDelete = [
-      "board",
-      "turnColor",
-      "isMyTurn",
-      "whiteWins",
-      "blackWins",
-      "gameOver",
-      "playerColor",
-      "playerQuantity",
-    ];
-    storageItemsToDelete.forEach((item) =>
-      window.sessionStorage.removeItem(item)
-    );
-  }, []);
-
   const handleClick = (numPlayers, variant) => {
     Router.push({
       pathname: "/game",
@@ -39,9 +24,9 @@ const Home = () => {
     });
   };
 
-  const variantArray = Object.keys(variants);
+  const variantArray = Object.keys(variantDescriptions);
   const variantButtonConfig = variantArray.map((variant, key) => (
-    <VariantCard key={key} variant={variant} className={styles.card} onClick={() => handleClick(numPlayers, variant)} />
+    <VariantCard key={key} variantTitle={variant} variantDescription={variantDescriptions[variant]} className={styles.card} onClick={() => handleClick(numPlayers, variant)} />
   ));
 
   const Variants = () => {

@@ -4,7 +4,8 @@ import { convertNumToPiece, convertObjToPiece } from "./pieces";
 import { variants } from "./variants";
 import { v4 as uuidv4 } from "uuid";
 import CountdownTimer from "./timer/CountdownTimer";
-
+import BoardDisplay from "./BoardDisplay";
+import { switchColor } from "../utils/switchColor";
 
 const Board = ({ variant, numPlayers, gameId }) => {
 
@@ -43,8 +44,7 @@ const Board = ({ variant, numPlayers, gameId }) => {
     }
   }
 
-  let themeColor1 = "rgba(240,217,181,255)";
-  let themeColor2 = "rgba(181,136,99,255)";
+
 
   const [board, setBoard] = useState([]);
   const [canSelectPiece, setCanSelectPiece] = useState(true);
@@ -55,7 +55,8 @@ const Board = ({ variant, numPlayers, gameId }) => {
   const [whiteWins, setWhiteWins] = useState(false);
   const [blackWins, setBlackWins] = useState(false);
   const [gameOver, setGameOver] = useState(false);
-  const [playerColor, setPlayerColor] = useState(); // white is 1, black is -1
+  const [playerColor, setPlayerColor] = useState(1); // white is 1, black is -1
+  const [boardDirectionColor, setBoardDirectionColor] = useState(playerColor) // Board direction, separate from player's color
   
   function sendMove(msg) {
     const msgAsJson = JSON.stringify(msg)
@@ -184,129 +185,12 @@ const Board = ({ variant, numPlayers, gameId }) => {
     }
   };
 
-  const boardDisplayWhite = () => {
-    return (
-      <div className={"outer-container"}>
-        {gameOver && <div>Game is over</div>}
-        {whiteWins && <div>White wins</div>}
-        {blackWins && <div>Black wins</div>}
-        <div className="inner-container">
-          <h1>Countdown Timer</h1>
-          <CountdownTimer targetDate={time} />
-          {board.map((row, i) => {
-            return (
-              <div key={uuidv4()} className="board-row">
-                {row.map((item, j) => {
-                  return (
-                    <div
-                      key={uuidv4()}
-                      className="square"
-                      onClick={() => clickSquare(item)}
-                      style={{
-                        backgroundColor:
-                          (j + i) % 2 === 0 ? themeColor1 : themeColor2,
-                        border: item.isLegalSquare && "2px solid green",
-                        width: `${100 / row.length}%`,
-                        maxWidth: "55px",
-                      }}
-                    >
-                      {item.pieceNum ? (
-                        <Image
-                          className="piece-img"
-                          src={"/" + item.imageUrl}
-                          alt={`Chess piece, id is ${item.imageUrl}`}
-                          height="50"
-                          width="50"
-                        />
-                      ) : null}
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  };
-
-  const boardDisplayBlack = () => {
-    return (
-      <div className={"outer-container"}>
-        {gameOver && <div>Game is over</div>}
-        {whiteWins && <div>White wins</div>}
-        {blackWins && <div>Black wins</div>}
-        <div className="inner-container">
-          {board
-            .slice(0)
-            .reverse()
-            .map((row, i) => {
-              return (
-                <div key={uuidv4()} className="board-row">
-                  {row
-                    .slice(0)
-                    .reverse()
-                    .map((item, j) => {
-                      return (
-                        <div
-                          key={uuidv4()}
-                          className="square"
-                          onClick={() => clickSquare(item)}
-                          style={{
-                            backgroundColor:
-                              (j + i) % 2 === 0 ? themeColor1 : themeColor2,
-                            border: item.isLegalSquare && "2px solid green",
-                            width: `${100 / row.length}%`,
-                            maxWidth: "55px",
-                          }}
-                        >
-                          {item.pieceNum ? (
-                            <Image
-                              className="piece-img"
-                              src={"/" + item.imageUrl}
-                              alt={`Chess piece, id is ${item.imageUrl}`}
-                              height="50"
-                              width="50"
-                            />
-                          ) : null}
-                        </div>
-                      );
-                    })}
-                </div>
-              );
-            })}
-        </div>
-      </div>
-    );
-  };
-
-  if (playerColor === 1) {
-    return boardDisplayWhite();
-  }
-  if (playerColor === -1) {
-    return boardDisplayBlack();
-  }
   return (
-    <div>
-      <h3>Select color</h3>
-      <button
-        onClick={() => {
-          setPlayerColor(1);
-          setIsMyTurn(true);
-        }}
-      >
-        White
-      </button>
-      <button
-        onClick={() => {
-          setPlayerColor(-1);
-          setIsMyTurn(false);
-        }}
-      >
-        Black
-      </button>
-    </div>
-  );
+    <>
+        <BoardDisplay boardDirectionColor={boardDirectionColor} board={board} clickSquare={clickSquare} />
+        <button onClick={() => setBoardDirectionColor(switchColor(boardDirectionColor))}>Flip Board</button>
+    </>
+)
 };
 
 export default Board;
