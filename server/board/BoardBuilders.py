@@ -3,6 +3,8 @@ from typing import List
 from BoardConstants import piece_numbers
 
 
+
+
 def empty_board(length: int, width: int):
     board = []
     for i in range(length):
