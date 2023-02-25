@@ -1,5 +1,6 @@
 import random
-from BoardConstants import piece_numbers, standard_pieces
+from typing import List
+from board.BoardConstants import piece_numbers, standard_pieces
 
 class Row:
     def __init__(self, width) -> None:
@@ -16,11 +17,11 @@ class Row:
     def is_empty(self):
         return set(self.row) == set([0])
     
-    def random(self, pieces: list[int]):
+    def random(self, pieces: List[int]):
         self.row = [random.choice(pieces) for i in range(self.width)]
         return self
     
-    def random_with_king(self, pieces: list[int]):
+    def random_with_king(self, pieces: List[int]):
         self.row = [random.choice(pieces) for i in range(self.width)]
         if piece_numbers["king"] not in self.row:
             self.row[random.randint(0, self.width - 1)] = piece_numbers["king"]

@@ -52,7 +52,6 @@ export function randomBothSidesSame(length, width, possiblePieces, usePawnRow) {
     for (let i = 0; i < rowsToPopulate; i++) {
         let row = board[i];
         board[i] = populateRow(row, possiblePieces);
-        console.log(populateRow(row, possiblePieces))
     }
     // Populate a row with pawns if needed
     if (usePawnRow) {

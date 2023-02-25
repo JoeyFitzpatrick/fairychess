@@ -1,6 +1,8 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from ConnectionManager import ConnectionManager
+from pydantic import BaseModel
+from board.Board import Board
 
 app = FastAPI()
 
@@ -27,7 +29,10 @@ async def handler(websocket, path):
     await websocket.send(data)
 
 @app.websocket("/ws/{room_id}")
+# TODO: implement request body so that request to join room also provides params to create board
 async def websocket_endpoint(websocket: WebSocket, room_id: str):
+    # board = generate_board(add params here)
+    # await manager.connect(websocket, room_id, board)
     await manager.connect(websocket, room_id)
     try:
         while True:
@@ -38,3 +43,20 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str):
     except WebSocketDisconnect:
         manager.disconnect(websocket, room_id)
         await manager.broadcast(f"A player left the game", room_id)
+        
+        
+class BoardRequest(BaseModel):
+    roomId: str
+    boardType: str
+    length: int
+    width: int
+    boardParams: dict
+
+@app.post("/board/")
+async def get_board(req: BoardRequest):
+    board = generate_board(req.boardType, req.length, req.width, 2)
+    return board
+
+def generate_board(board_type: str, length: int, width: int, *board_params):
+    if board_type.lower() == "random_same":
+        return Board(length, width).random_same(*board_params)
