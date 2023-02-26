@@ -1,8 +1,6 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from fastapi.middleware.cors import CORSMiddleware
-from ConnectionManager import ConnectionManager
-from pydantic import BaseModel
-from board.Board import Board
+from starlette.middleware.cors import CORSMiddleware
+from ConnectionManager import ConnectionManager, BoardRequest
 
 app = FastAPI()
 
@@ -12,6 +10,7 @@ origins = [
     "http://localhost",
     "http://localhost:8080",
     "http://localhost:3000",
+    "http://localhost:8000",
 ]
 
 app.add_middleware(
@@ -44,19 +43,7 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str):
         manager.disconnect(websocket, room_id)
         await manager.broadcast(f"A player left the game", room_id)
         
-        
-class BoardRequest(BaseModel):
-    roomId: str
-    boardType: str
-    length: int
-    width: int
-    boardParams: dict
 
 @app.post("/board/")
 async def get_board(req: BoardRequest):
-    board = generate_board(req.boardType, req.length, req.width, 2)
-    return board
-
-def generate_board(board_type: str, length: int, width: int, *board_params):
-    if board_type.lower() == "random_same":
-        return Board(length, width).random_same(*board_params)
+    return manager.get_board(req)

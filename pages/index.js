@@ -21,13 +21,12 @@ const data = {
   boardType: "random_same",
   length: 8,
   width: 8,
-  boardParams: {
-    rowsToPopulate: 2,
-    pawnRow: true,
-  }
+  rowsToPopulate: 2,
+  pawnRow: true,
 };
 
 async function getBoard(data) {
+  console.log("body: ", JSON.stringify(data));
   await fetch(`${baseUrl}/board`, {
     method: "POST", // or 'PUT'
     mode: "cors", // no-cors, *cors, same-origin
