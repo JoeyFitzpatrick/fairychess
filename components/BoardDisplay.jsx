@@ -2,6 +2,13 @@ import Image from "next/image";
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
 
+function getSquareStyle(square) {
+  let className = "square";
+  square.isLegalSquare ? className += " legalSquare" : null;
+  square.isLegalSquare && square.pieceNum ? className += " hasPiece" : null;
+  return className;
+}
+
 function BoardDisplay({ boardDirectionColor, board, clickSquare }) {
     let themeColor1 = "rgba(240,217,181,255)";
     let themeColor2 = "rgba(181,136,99,255)";
@@ -16,7 +23,7 @@ function BoardDisplay({ boardDirectionColor, board, clickSquare }) {
                   return (
                     <div
                       key={uuidv4()}
-                      className="square"
+                      className={getSquareStyle(item)}
                       onClick={() => clickSquare(item)}
                       style={{
                         backgroundColor:
@@ -25,9 +32,6 @@ function BoardDisplay({ boardDirectionColor, board, clickSquare }) {
                         maxWidth: "55px",
                       }}
                     >
-                      {item.isLegalSquare ? (
-                        <span class="dot">&nbsp;</span>
-                      ) : null}
                       {item.pieceNum ? (
                         <Image
                           className="piece-img"
@@ -70,11 +74,13 @@ function BoardDisplay({ boardDirectionColor, board, clickSquare }) {
                           style={{
                             backgroundColor:
                               (j + i) % 2 === 0 ? themeColor1 : themeColor2,
-                            border: item.isLegalSquare && "2px solid green",
                             width: `${100 / row.length}%`,
                             maxWidth: "55px",
                           }}
                         >
+                          {item.isLegalSquare ? (
+                            <span class="dot">&nbsp;</span>
+                          ) : null}
                           {item.pieceNum ? (
                             <Image
                               className="piece-img"

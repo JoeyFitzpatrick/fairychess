@@ -6,8 +6,6 @@ import { variantDescriptions } from "../components/variants";
 import styles from "../styles/Home.module.css";
 import VariantCard from "../components/VariantCard";
 
-// TODO: improve UI by adding lichess-style colored outline for valid move squares
-// TODO: make endpoint for board generation and call it from front end = None
 // TODO: implement drag and drop 
 // TODO: add play clocks
 // TODO: display red when king in check

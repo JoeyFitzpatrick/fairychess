@@ -28,10 +28,7 @@ async def handler(websocket, path):
     await websocket.send(data)
 
 @app.websocket("/ws/{room_id}")
-# TODO: implement request body so that request to join room also provides params to create board
 async def websocket_endpoint(websocket: WebSocket, room_id: str):
-    # board = generate_board(add params here)
-    # await manager.connect(websocket, room_id, board)
     await manager.connect(websocket, room_id)
     try:
         while True:

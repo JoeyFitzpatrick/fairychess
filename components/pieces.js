@@ -1,5 +1,3 @@
-//TODO: look at any time y is compared to boardLength-1, it should probably be just boardLength instead
-
 export const convertNumToPiece = (pieceNum, x, y) => {
     switch (pieceNum) {
         case 0:
