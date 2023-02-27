@@ -25,8 +25,13 @@ const data = {
   pawnRow: true,
 };
 
+
+
+
+const Home = () => {
+
 async function getBoard(data) {
-  console.log("body: ", JSON.stringify(data));
+  /* console.log("body: ", JSON.stringify(data)); */
   await fetch(`${baseUrl}/board`, {
     method: "POST", // or 'PUT'
     mode: "cors", // no-cors, *cors, same-origin
@@ -37,29 +42,26 @@ async function getBoard(data) {
   })
     .then((response) => response.json())
     .then((response) => {
-      console.log("Success:", response);
+      /* console.log("Success:", JSON.parse(response)); */
+      setBoard(JSON.parse(response));
     })
     .catch((error) => {
       console.error("Error:", error);
     });
 }
-
-
-
-const Home = () => {
   const [numPlayers, setNumPlayers] = useState(1);
-  getBoard(data)
-
+  const [board, setBoard] = useState(null)
+  useEffect(() => {
+    getBoard(data)
+  }, [])
+  
   const handleClick = (numPlayers, variant) => {
-    // 1. Post request. Send gameId and params needed to build board
-    // 2. That request will check the gameId to see if there is already a board.
-    // 3. If there is a board, ignore the other params and use that
-    // 4. Otherwise, create board with params, attach to room via id
-    // 5. Connect to room (which has board either way)
     Router.push({
       pathname: "/game",
-      query: { numPlayers: numPlayers, variant: variant, gameId: gameId },
-    });
+      query: { numPlayers: numPlayers, variant: variant, gameId: gameId, board: JSON.stringify(board) },
+    },
+      `/game`
+    );
   };
 
   const variantArray = Object.keys(variantDescriptions);

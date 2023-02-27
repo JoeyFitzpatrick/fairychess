@@ -1,5 +1,7 @@
 from board.BoardConstants import piece_numbers as pn, standard_pieces as sp
 from board.Row import Row
+# from BoardConstants import piece_numbers as pn, standard_pieces as sp
+# from Row import Row
 
 
 class Board:
@@ -16,18 +18,18 @@ class Board:
         return self
     
     def last_non_empty(self) -> int:
-        i = 0
+        i = len(self.board) - 1
         while True:
             row = self.board[i]
             is_empty = not isinstance(row, Row) or row.is_empty()
-            if i >= len(self.board) or is_empty:
+            if i <= 0 or is_empty:
                 break
-            i += 1  
-        return i - 1
+            i -= 1  
+        return i + 1
     
-    def append_rows(self, row: Row, num_rows: int = 1):
+    def push_rows(self, row: Row, num_rows: int = 1):
         for i in range(num_rows):
-            self.board.append(row)
+            self.board.insert(0, row)
         return self
     
     def do_if(self, condition: bool, fn: callable, *fn_params):
@@ -35,28 +37,29 @@ class Board:
             return fn(*fn_params)
         return self
     
-    def replace(self, row: Row, row_to_replace: int = -1):
+    def replace(self, row: Row, row_to_replace: int = 0):
         self.board[row_to_replace] = row
         return self
     
-    def append_inverted(self):
+    def push_inverted(self):
         i = self.last_non_empty()
-        while i >= 0:
+        while i <= len(self.board) - 1:
             row = self.board[i]
-            self.append_rows(row.invert())
-            i -= 1
+            self.push_rows(row.invert())
+            i += 2
         return self
     
     def random_same(self, rows_to_populate, use_pawn_row = True, pieces = sp):
         self = self.empty() \
-            .append_rows(Row(self.width).random_with_king(pieces)) \
-            .append_rows(Row(self.width).random(pieces), rows_to_populate - 1) \
+            .push_rows(Row(self.width).random_with_king(pieces)) \
+            .push_rows(Row(self.width).random(pieces), rows_to_populate - 1) \
             .do_if(use_pawn_row, self.replace, Row(self.width).fill(pn["pawn"])) \
-            .append_rows(Row(self.width).empty(), self.length - rows_to_populate*2).append_inverted()
+            .push_rows(Row(self.width).empty(), self.length - rows_to_populate*2) \
+            .push_inverted()
         return self
         
     
 
     
-# board = generate_board("random_same", 8, 8, 2, True)
-# print(board) 
+# board = Board(8, 8).random_same(3, True)
+# print(board)

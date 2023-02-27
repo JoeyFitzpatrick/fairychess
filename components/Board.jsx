@@ -7,7 +7,7 @@ import CountdownTimer from "./timer/CountdownTimer";
 import BoardDisplay from "./BoardDisplay";
 import { switchColor } from "../utils/switchColor";
 
-const Board = ({ variant, numPlayers, gameId }) => {
+const Board = ({ variant, numPlayers, gameId, initialBoard }) => {
 
   const [socket, setSocket] = useState()  
   
@@ -65,7 +65,7 @@ const Board = ({ variant, numPlayers, gameId }) => {
 
   useEffect(() => {
     setBoard(
-      variants[variant].map((row, j) => {
+      initialBoard.map((row, j) => {
         return row.map((item, i) => {
           return convertNumToPiece(item, j, i);
         });

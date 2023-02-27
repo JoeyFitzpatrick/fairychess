@@ -2,6 +2,7 @@ from typing import List, Dict
 from fastapi import WebSocket
 from board.Board import Board
 from pydantic import BaseModel
+import json
 
 class BoardRequest(BaseModel):
     roomId: str
@@ -32,8 +33,7 @@ class ConnectionManager:
             self.rooms[room_id] = Room(room_id)
         if not self.rooms[room_id].board:
             self.rooms[room_id].board = self.generate_board(req)
-        return self.rooms[room_id].board
-
+        return repr(self.rooms[room_id].board)
     async def connect(self, websocket: WebSocket, room_id: str):
         await websocket.accept()
         if room_id not in self.rooms:

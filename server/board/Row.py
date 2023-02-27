@@ -1,6 +1,7 @@
 import random
 from typing import List
 from board.BoardConstants import piece_numbers, standard_pieces
+# from BoardConstants import piece_numbers, standard_pieces
 
 class Row:
     def __init__(self, width) -> None:
