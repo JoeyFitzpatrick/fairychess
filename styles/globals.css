@@ -85,14 +85,8 @@ a {
   background: radial-gradient(transparent 0%, transparent 79%, rgba(20, 85, 0, 0.3) 80%);
 }
 
-.dot {
-  height: 18px;
-  width: 18px;
-  background-color: #bbb;
-  border-radius: 50%;
-  display: inline-block;
-  position: absolute;
-  opacity: 0.4;
+.invisible {
+  color: coral;
 }
 
 .controlboard-container {

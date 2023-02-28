@@ -1,6 +1,6 @@
-import Image from "next/image";
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
+import PieceImage from "./PieceImage";
 
 function getSquareStyle(square) {
   let className = "square";
@@ -9,7 +9,16 @@ function getSquareStyle(square) {
   return className;
 }
 
-function BoardDisplay({ boardDirectionColor, board, clickSquare }) {
+function allowDrop(e) {
+  e.preventDefault();
+  e && e.dataTransfer ? e.dataTransfer.dropEffect = "move" : null;
+}
+
+function handleDragStart() {
+  console.log(this)
+}
+
+function BoardDisplay({ boardDirectionColor, board, selectSquare }) {
     let themeColor1 = "rgba(240,217,181,255)";
     let themeColor2 = "rgba(181,136,99,255)";
   const boardDisplayWhite = () => {
@@ -24,7 +33,9 @@ function BoardDisplay({ boardDirectionColor, board, clickSquare }) {
                     <div
                       key={uuidv4()}
                       className={getSquareStyle(item)}
-                      onClick={() => clickSquare(item)}
+                      onMouseDown={() => selectSquare(item)}
+                      onDrop={() => selectSquare(item)}
+                      onDragOver={() => allowDrop(event)}
                       style={{
                         backgroundColor:
                           (j + i) % 2 === 0 ? themeColor1 : themeColor2,
@@ -33,13 +44,7 @@ function BoardDisplay({ boardDirectionColor, board, clickSquare }) {
                       }}
                     >
                       {item.pieceNum ? (
-                        <Image
-                          className="piece-img"
-                          src={"/" + item.imageUrl}
-                          alt={`Chess piece, id is ${item.imageUrl}`}
-                          height="50"
-                          width="50"
-                        />
+                        <PieceImage item={item} onDragStart={() => selectSquare(item)}/>
                       ) : null}
                     </div>
                   );
@@ -69,8 +74,10 @@ function BoardDisplay({ boardDirectionColor, board, clickSquare }) {
                       return (
                         <div
                           key={uuidv4()}
-                          className="square"
-                          onClick={() => clickSquare(item)}
+                          className={getSquareStyle(item)}
+                          onMouseDown={() => selectSquare(item)}
+                          onDrop={() => selectSquare(item)}
+                          onDragOver={() => allowDrop(event)}
                           style={{
                             backgroundColor:
                               (j + i) % 2 === 0 ? themeColor1 : themeColor2,
@@ -82,13 +89,7 @@ function BoardDisplay({ boardDirectionColor, board, clickSquare }) {
                             <span class="dot">&nbsp;</span>
                           ) : null}
                           {item.pieceNum ? (
-                            <Image
-                              className="piece-img"
-                              src={"/" + item.imageUrl}
-                              alt={`Chess piece, id is ${item.imageUrl}`}
-                              height="50"
-                              width="50"
-                            />
+                            <PieceImage item={item} onDragStart={() => selectSquare(item)}/>
                           ) : null}
                         </div>
                       );

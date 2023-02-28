@@ -22,8 +22,6 @@ const Board = ({ variant, numPlayers, gameId, initialBoard }) => {
   
   function findPieceOrSquare(jsonPiece) {
     const possiblePiece = board[jsonPiece.x][jsonPiece.y]
-    console.log(possiblePiece)
-    console.log(jsonPiece)
     if (possiblePiece.color === jsonPiece.color && possiblePiece.pieceNum === jsonPiece.pieceNum) {
       return possiblePiece
     }
@@ -33,13 +31,11 @@ const Board = ({ variant, numPlayers, gameId, initialBoard }) => {
   if (socket) {
     socket.onmessage = (msg) => {
       const data = JSON.parse(msg.data)
-      console.log(data);
       if (data.type === 'move') {
         const piece = findPieceOrSquare(data.piece)
         const square = findPieceOrSquare(data.endSquare)
         movePiece(piece, square)
       } else {
-        console.log(msg.data.type)
       }
     }
   }
@@ -141,7 +137,7 @@ const Board = ({ variant, numPlayers, gameId, initialBoard }) => {
     }
   };
 
-  const clickSquare = (piece) => {
+  const selectSquare = (piece, e) => {
     if (numPlayers === "2") {
       if (!isMyTurn) {
         return;
@@ -187,7 +183,7 @@ const Board = ({ variant, numPlayers, gameId, initialBoard }) => {
 
   return (
     <>
-        <BoardDisplay boardDirectionColor={boardDirectionColor} board={board} clickSquare={clickSquare} />
+        <BoardDisplay boardDirectionColor={boardDirectionColor} board={board} selectSquare={selectSquare} />
         <button onClick={() => setBoardDirectionColor(switchColor(boardDirectionColor))}>Flip Board</button>
     </>
 )
