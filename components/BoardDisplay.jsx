@@ -35,6 +35,7 @@ function BoardDisplay({ boardDirectionColor, board, selectSquare }) {
                       className={getSquareStyle(item)}
                       onMouseDown={() => selectSquare(item)}
                       onDrop={() => selectSquare(item)}
+                      // todo: add outline to hovered square
                       onDragOver={() => allowDrop(event)}
                       style={{
                         backgroundColor:

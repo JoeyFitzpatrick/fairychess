@@ -4,7 +4,7 @@ from board.BoardConstants import piece_numbers, standard_pieces
 # from BoardConstants import piece_numbers, standard_pieces
 
 class Row:
-    def __init__(self, width) -> None:
+    def __init__(self, width = None) -> None:
         self.row = []
         self.width = width
     
@@ -38,3 +38,7 @@ class Row:
         inverted = [piece * -1 for piece in self.row]
         row.row = inverted
         return row
+        
+    def hardcoded(self, input_row: List[int]):
+        self.row = input_row
+        return self

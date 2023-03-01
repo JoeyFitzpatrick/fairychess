@@ -2,11 +2,11 @@ import Router from "next/router";
 import { useState, useEffect } from "react";
 import TopNav from "../components/TopNav";
 import { v4 as uuidv4 } from "uuid";
-import { variantDescriptions } from "../components/variants";
+import { variants } from "../components/variants";
 import styles from "../styles/Home.module.css";
 import VariantCard from "../components/VariantCard";
 
-// TODO: implement drag and drop 
+// TODO: make it so that making board, going back, and making another board fetches the new board, not the old one
 // TODO: add play clocks
 // TODO: display red when king in check
 // TODO: add "secret king" mode
@@ -14,9 +14,9 @@ import VariantCard from "../components/VariantCard";
 export const gameId = uuidv4();
 
 const baseUrl = "http://localhost:8000"
-const data = {
+const requestBody = {
   roomId: gameId,
-  boardType: "random_same",
+  boardType: "",
   length: 8,
   width: 8,
   rowsToPopulate: 2,
@@ -24,47 +24,40 @@ const data = {
 };
 
 
-
-
 const Home = () => {
 
-async function getBoard(data) {
-  /* console.log("body: ", JSON.stringify(data)); */
-  await fetch(`${baseUrl}/board`, {
-    method: "POST", // or 'PUT'
+async function getBoard(body) {
+  let response = await fetch(`${baseUrl}/board`, {
+    method: "POST",
     mode: "cors", // no-cors, *cors, same-origin
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
-  })
-    .then((response) => response.json())
-    .then((response) => {
-      /* console.log("Success:", JSON.parse(response)); */
-      setBoard(JSON.parse(response));
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
+    body: JSON.stringify(body),
+  }).catch((error) => {
+    console.error("Error:", error);
+  });
+
+  return await response.json();
 }
+
   const [numPlayers, setNumPlayers] = useState(1);
-  const [board, setBoard] = useState(null)
-  useEffect(() => {
-    getBoard(data)
-  }, [])
-  
-  const handleClick = (numPlayers, variant) => {
+
+  const handleClick = async (numPlayers, requestType) => {
+    requestBody.boardType = requestType;
+    console.log(requestBody);
+    const board = await getBoard(requestBody)
+    
     Router.push({
       pathname: "/game",
-      query: { numPlayers: numPlayers, variant: variant, gameId: gameId, board: JSON.stringify(board) },
+      query: { numPlayers: numPlayers, gameId: gameId, board: board },
     },
       `/game`
     );
   };
 
-  const variantArray = Object.keys(variantDescriptions);
-  const variantButtonConfig = variantArray.map((variant, key) => (
-    <VariantCard key={key} variantTitle={variant} variantDescription={variantDescriptions[variant]} className={styles.card} onClick={() => handleClick(numPlayers, variant)} />
+  const variantButtonConfig = variants.map((variant, key) => (
+    <VariantCard key={key} variantTitle={variant.title} variantDescription={variant.description} className={styles.card} onClick={() => handleClick(numPlayers, variant.requestType)} />
   ));
 
   const Variants = () => {

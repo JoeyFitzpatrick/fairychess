@@ -64,21 +64,34 @@ export function randomBothSidesSame(length, width, possiblePieces, usePawnRow) {
     return board;
 }
 
-export const variants = {
-    "Default": boardDefault,
-    "Big Board": defaultLarger,
-    "Small Board": defaultSmaller,
-    "Default Random Both Sides Same": defaultRandomSame,
-    "New Piece Testing Zone": newPieceTesting
-}
-
-export const variantDescriptions = {
-    "Default": "Standard chess.",
-    "Big Board": "Standard, but with a bigger board.",
-    "Small Board": "Standard, but with a smaller board.",
-    "Default Random Both Sides Same": "Both players get the same randomized set of pieces. Standard board size.",
-    "New Piece Testing Zone": "Just foolin around."
-}
+export const variants = [
+  {
+    title: "Default",
+    description: "Standard chess.",
+    requestType: "default",
+  },
+  {
+    title: "Big Board",
+    description: "Standard, but with a bigger board.",
+    requestType: "default_larger",
+  },
+  {
+    title: "Small Board",
+    description: "Standard, but with a smaller board.",
+    requestType: "default_smaller",
+  },
+  {
+    title: "Default Random Both Sides Same",
+    description:
+      "Both players get the same randomized set of pieces. Standard board size.",
+    requestType: "random_same",
+  },
+  {
+    title: "New Piece Testing Zone",
+    description: "Just foolin around.",
+    requestType: "new_piece_testing",
+  },
+];
 
 function emptyBoard(length, width) {
     return Array.from(Array(length), _ => Array(width).fill(0));

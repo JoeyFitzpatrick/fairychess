@@ -1,4 +1,5 @@
-from board.BoardConstants import piece_numbers as pn, standard_pieces as sp
+from typing import List
+from board.BoardConstants import piece_numbers as pn, standard_pieces as sp, layouts
 from board.Row import Row
 # from BoardConstants import piece_numbers as pn, standard_pieces as sp
 # from Row import Row
@@ -48,6 +49,12 @@ class Board:
             self.push_rows(row.invert())
             i += 2
         return self
+        
+    def hardcoded(self, input_board: List[List[int]]):
+        self.board = []
+        for row in input_board:
+            self.board.append(Row().hardcoded(row))
+        return self
     
     def random_same(self, rows_to_populate, use_pawn_row = True, pieces = sp):
         self = self.empty() \
@@ -58,8 +65,10 @@ class Board:
             .push_inverted()
         return self
         
+    def from_layout(self, layout: str):
+        return self.hardcoded(layouts[layout])
     
 
     
-# board = Board(8, 8).random_same(3, True)
+# board = Board().from_layout("default_larger")
 # print(board)
