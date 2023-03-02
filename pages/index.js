@@ -1,5 +1,5 @@
 import Router from "next/router";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import TopNav from "../components/TopNav";
 import { v4 as uuidv4 } from "uuid";
 import { variants } from "../components/variants";
@@ -11,46 +11,30 @@ import VariantCard from "../components/VariantCard";
 // TODO: display red when king in check
 // TODO: add "secret king" mode
 
-export const gameId = uuidv4();
-
-const baseUrl = "http://localhost:8000"
-const requestBody = {
-  roomId: gameId,
-  boardType: "",
-  length: 8,
-  width: 8,
-  rowsToPopulate: 2,
-  pawnRow: true,
-};
-
-
 const Home = () => {
 
-async function getBoard(body) {
-  let response = await fetch(`${baseUrl}/board`, {
-    method: "POST",
-    mode: "cors", // no-cors, *cors, same-origin
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  }).catch((error) => {
-    console.error("Error:", error);
-  });
-
-  return await response.json();
-}
-
   const [numPlayers, setNumPlayers] = useState(1);
+  const [gameId, setGameId] = useState(uuidv4());
+  
+  useEffect(() => {
+    setGameId(uuidv4());
+  }, [])
 
-  const handleClick = async (numPlayers, requestType) => {
+  const requestBody = {
+    roomId: gameId,
+    boardType: "",
+    length: 8,
+    width: 8,
+    rowsToPopulate: 2,
+    pawnRow: true,
+  };
+
+  const handleClick = (numPlayers, requestType) => {
     requestBody.boardType = requestType;
-    console.log(requestBody);
-    const board = await getBoard(requestBody)
     
     Router.push({
       pathname: "/game",
-      query: { numPlayers: numPlayers, gameId: gameId, board: board },
+      query: { numPlayers: numPlayers, gameId: gameId, requestBody: JSON.stringify(requestBody) }
     },
       `/game`
     );

@@ -12,3 +12,6 @@ Most of the timer code was written by [Tapas Adhikary](https://www.tapasadhikary
 To run locally:
 * Navigate to the server directory, then run `uvicorn main:app --reload`
 * From the root dir, run `npx next dev`
+
+### Todo
+Move board request logic to Game component, and pass request params from index.js
