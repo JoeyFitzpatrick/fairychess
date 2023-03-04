@@ -38,9 +38,11 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str):
             # await manager.broadcast(msg, room_id)
     except WebSocketDisconnect:
         manager.disconnect(websocket, room_id)
-        await manager.broadcast(f"A player left the game", room_id)
+        # await manager.broadcast(f"A player left the game", room_id)
+        
         
 
 @app.post("/board/")
 async def get_board(req: BoardRequest):
+    print(req)
     return manager.get_board(req)

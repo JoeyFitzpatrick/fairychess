@@ -14,10 +14,6 @@ function allowDrop(e) {
   e && e.dataTransfer ? e.dataTransfer.dropEffect = "move" : null;
 }
 
-function handleDragStart() {
-  console.log(this)
-}
-
 function BoardDisplay({ boardDirectionColor, board, selectSquare }) {
     let themeColor1 = "rgba(240,217,181,255)";
     let themeColor2 = "rgba(181,136,99,255)";

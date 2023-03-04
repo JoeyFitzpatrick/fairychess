@@ -13,6 +13,7 @@ import VariantCard from "../components/VariantCard";
 
 const Home = () => {
 
+
   const [numPlayers, setNumPlayers] = useState(1);
   const [gameId, setGameId] = useState(uuidv4());
   
@@ -33,10 +34,10 @@ const Home = () => {
     requestBody.boardType = requestType;
     
     Router.push({
-      pathname: "/game",
+      pathname: `/game/${gameId}`,
       query: { numPlayers: numPlayers, gameId: gameId, requestBody: JSON.stringify(requestBody) }
     },
-      `/game`
+      `/game/${gameId}`
     );
   };
 

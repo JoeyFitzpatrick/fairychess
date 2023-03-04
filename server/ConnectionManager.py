@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import Union, Dict
 from fastapi import WebSocket
 from board.Board import Board
 from board.BoardConstants import layouts
@@ -6,12 +6,12 @@ from pydantic import BaseModel
 import json
 
 class BoardRequest(BaseModel):
-    roomId: str
-    boardType: str
-    length: int
-    width: int
-    rowsToPopulate: int
-    pawnRow: bool
+    roomId: Union[str, None]
+    boardType: Union[str, None]
+    length: Union[int, None]
+    width: Union[int, None]
+    rowsToPopulate: Union[int, None]
+    pawnRow: Union[bool, None]
 
 class Room:
     def __init__(self, id: str, board: Board = None):
@@ -48,11 +48,13 @@ class ConnectionManager:
         if roomId in self.rooms:
             self.rooms[roomId].connections.remove(websocket)
         if len(self.rooms[roomId].connections) == 0:
-            del self.rooms[roomId]
+            print("no connections in room: ", roomId)
+            # del self.rooms[roomId]
 
     async def broadcast(self, message: str, roomId: str):
-        for connection in self.rooms[roomId].connections:
-            await connection.send_text(message)
+        if roomId in self.rooms and self.rooms[roomId].connections:
+            for connection in self.rooms[roomId].connections:
+                await connection.send_text(message)
 
     async def emit(self, websocket: WebSocket, message: str, roomId: str):
         for connection in self.rooms[roomId].connections:

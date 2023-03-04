@@ -14,4 +14,4 @@ To run locally:
 * From the root dir, run `npx next dev`
 
 ### Todo
-Move board request logic to Game component, and pass request params from index.js
+make game page send gameId as request to server on page reload
