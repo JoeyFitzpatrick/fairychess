@@ -3,7 +3,8 @@ from fastapi import WebSocket
 from board.Board import Board
 from board.BoardConstants import layouts
 from pydantic import BaseModel
-import json
+import threading
+import time
 
 class BoardRequest(BaseModel):
     roomId: Union[str, None]
@@ -49,7 +50,22 @@ class ConnectionManager:
             self.rooms[roomId].connections.remove(websocket)
         if len(self.rooms[roomId].connections) == 0:
             print("no connections in room: ", roomId)
-            # del self.rooms[roomId]
+            self.remove_room(roomId)
+   
+    def remove_room(self, roomId: str):
+        event = threading.Event()
+        print("starting removal", roomId)
+
+        def wait_and_delete():
+            event.wait(300)
+            if self.rooms[roomId] and len(self.rooms[roomId].connections) == 0:
+                print("deleting room")
+                del self.rooms[roomId]
+            event.set()
+            
+        threading.Thread(target=wait_and_delete).start()
+        event.wait()
+
 
     async def broadcast(self, message: str, roomId: str):
         if roomId in self.rooms and self.rooms[roomId].connections:
