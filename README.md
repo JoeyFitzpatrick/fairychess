@@ -14,7 +14,6 @@ To run locally:
 * From the root dir, run `npx next dev`
 
 ### Todo
-Remove rooms that have been empty for 5 minutes
 Process moves on server and update board state on server
 Ensure that two players can play, leave the room, re-enter, etc. with no issues
 Figure out how to host on AWS

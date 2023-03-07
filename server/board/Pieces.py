@@ -1,0 +1,1 @@
+# Put piece classes here when needed

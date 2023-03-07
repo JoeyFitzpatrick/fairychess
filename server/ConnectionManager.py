@@ -4,7 +4,6 @@ from board.Board import Board
 from board.BoardConstants import layouts
 from pydantic import BaseModel
 import threading
-import time
 
 class BoardRequest(BaseModel):
     roomId: Union[str, None]
@@ -54,17 +53,14 @@ class ConnectionManager:
    
     def remove_room(self, roomId: str):
         event = threading.Event()
-        print("starting removal", roomId)
 
         def wait_and_delete():
             event.wait(300)
             if self.rooms[roomId] and len(self.rooms[roomId].connections) == 0:
-                print("deleting room")
                 del self.rooms[roomId]
             event.set()
             
         threading.Thread(target=wait_and_delete).start()
-        event.wait()
 
 
     async def broadcast(self, message: str, roomId: str):
@@ -73,6 +69,7 @@ class ConnectionManager:
                 await connection.send_text(message)
 
     async def emit(self, websocket: WebSocket, message: str, roomId: str):
+        print(message)
         for connection in self.rooms[roomId].connections:
             if connection != websocket:
                 await connection.send_text(message) 

@@ -1,6 +1,7 @@
 from typing import List
 from board.BoardConstants import piece_numbers as pn, standard_pieces as sp, layouts
 from board.Row import Row
+# from pydantic import BaseModel
 # from BoardConstants import piece_numbers as pn, standard_pieces as sp
 # from Row import Row
 
@@ -72,3 +73,8 @@ class Board:
     
 # board = Board().from_layout("default_larger")
 # print(board)
+
+# class MoveRequest(BaseModel):
+#     messageType: str
+#     piece: object
+#     endSquare: object
