@@ -11,6 +11,7 @@ class Board:
         self.board = []
         self.length = length
         self.width = width
+        self.turn_color = 1
     
     def __repr__(self):
         return str(self.board)
@@ -69,12 +70,9 @@ class Board:
     def from_layout(self, layout: str):
         return self.hardcoded(layouts[layout])
     
-
+    def process_move(self, piece_num, start_x, start_y, dest_x, dest_y, turn_color):
+        self.board[start_x].update_square(start_y, pn['empty'])
+        self.board[dest_x].update_square(dest_y, piece_num)
+        self.turn_color = turn_color
+        print(piece_num, start_x, start_x, dest_x, dest_y)
     
-# board = Board().from_layout("default_larger")
-# print(board)
-
-# class MoveRequest(BaseModel):
-#     messageType: str
-#     piece: object
-#     endSquare: object

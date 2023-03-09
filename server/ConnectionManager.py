@@ -1,7 +1,8 @@
+import json
 from typing import Union, Dict
 from fastapi import WebSocket
 from board.Board import Board
-from board.BoardConstants import layouts
+from board.BoardConstants import layouts, piece_numbers
 from pydantic import BaseModel
 import threading
 
@@ -12,6 +13,9 @@ class BoardRequest(BaseModel):
     width: Union[int, None]
     rowsToPopulate: Union[int, None]
     pawnRow: Union[bool, None]
+    
+class MoveRequest(BaseModel):
+    pass
 
 class Room:
     def __init__(self, id: str, board: Board = None):
@@ -48,7 +52,6 @@ class ConnectionManager:
         if roomId in self.rooms:
             self.rooms[roomId].connections.remove(websocket)
         if len(self.rooms[roomId].connections) == 0:
-            print("no connections in room: ", roomId)
             self.remove_room(roomId)
    
     def remove_room(self, roomId: str):
@@ -69,7 +72,25 @@ class ConnectionManager:
                 await connection.send_text(message)
 
     async def emit(self, websocket: WebSocket, message: str, roomId: str):
-        print(message)
         for connection in self.rooms[roomId].connections:
             if connection != websocket:
                 await connection.send_text(message) 
+    
+    def handle_message(self, msg: str, room_id: str):
+        move_req = json.loads(msg)
+        if 'type' in move_req and move_req['type'] == 'move':
+            piece = move_req['piece']
+            destination = move_req['endSquare']
+            board = self.rooms[room_id].board
+            turn_color = move_req['turnColor']
+            self.process_move(piece, destination, turn_color, board)
+            print(move_req)
+
+
+    def process_move(self, piece, destination, turn_color, board: Board):
+        start_x = piece['x']
+        start_y = piece['y']
+        dest_x = destination['x']
+        dest_y = destination['y']
+
+        board.process_move(piece['pieceNum'], start_x, start_y, dest_x, dest_y, turn_color)

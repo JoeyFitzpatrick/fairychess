@@ -15,6 +15,7 @@ To run locally:
 
 ### Todo
 Process moves on server and update board state on server
+Make sure rooms are actually being deleted when needed
 Ensure that two players can play, leave the room, re-enter, etc. with no issues
 Figure out how to host on AWS
 Take a break

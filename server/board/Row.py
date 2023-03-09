@@ -42,3 +42,6 @@ class Row:
     def hardcoded(self, input_row: List[int]):
         self.row = input_row
         return self
+    
+    def update_square(self, square_num: int, piece_num: int):
+        self.row[square_num] = piece_num
